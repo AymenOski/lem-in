@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func ExtractingDate() (int, int, int, map[int][]int) {
+func ExtractingDate() (int, string, string, map[string][]string) {
 	file, err := os.Open(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
@@ -19,35 +19,62 @@ func ExtractingDate() (int, int, int, map[int][]int) {
 	scanner := bufio.NewScanner(file)
 	c := 0
 	antNum := 0
-	startingRoom := 0
-	endingRoom := 0
-	Tunnels := make(map[int][]int)
+	startingRoom := ""
+	endingRoom := ""
+	// FC denoted as "format checker"
+	i := 0
+	FC_StartFlag := 0
+	FC_EndFlag := 0
+	FC_AntNumber := -1
+	Tunnels := make(map[string][]string)
 	check := false
 	for scanner.Scan() {
 		if c == 0 {
-			antNum, _ = strconv.Atoi(scanner.Text())
+			antNum, err = strconv.Atoi(scanner.Text())
+			if antNum <= 0 {
+				fmt.Println("ERROR: invalid data format, Number of ants should be greater than 0")
+				os.Exit(0)
+			}
+			FC_AntNumber = 0
+			if err != nil {
+				fmt.Println(err)
+				fmt.Println("ERROR: invalid data format, Ants number should be an integer.")
+				os.Exit(0)
+			}
 			c++
 		}
 		if c == 3 {
 			// storing data after the ##end flag
-			if len(scanner.Text()) < 4 {
-				temp, _ := strconv.Atoi(scanner.Text()[:1])
-				temp2, _ := strconv.Atoi(scanner.Text()[2:3])
-				Tunnels[temp] = append(Tunnels[temp], temp2)
+			tunnel := strings.Split(scanner.Text(), "-")
+			if len(tunnel) == 2 {
+				Tunnels[tunnel[0]] = append(Tunnels[tunnel[0]], tunnel[1])
 			}
 		}
+		// storing data after the ##start flag
 		if check {
-			startingRoom, _ = strconv.Atoi(scanner.Text()[:1])
-			check = false
+			if len(scanner.Text()) > 0 {
+				startingRoom = scanner.Text()[:1]
+				check = false
+			} else {
+				fmt.Println("ERROR: invalid data format, Missing ants starting room")
+			}
 		} else if !check && c == 2 {
-			endingRoom, _ = strconv.Atoi(scanner.Text()[:1])
-			c = 3
+			if len(scanner.Text()) > 0 {
+				endingRoom = scanner.Text()[:1]
+				c = 3
+			} else {
+				fmt.Println("ERROR: invalid data format, Missing ants ending room")
+			}
 		}
-		if strings.HasPrefix(scanner.Text(), "##start") {
+		if scanner.Text() == "##start" {
+			FC_StartFlag = i
 			check = true
-		} else if strings.HasPrefix(scanner.Text(), "##end") {
+		} else if scanner.Text() == "##end" {
+			FC_EndFlag = i
 			c = 2
 		}
+		i++
 	}
+	FormatChekcer(FC_AntNumber, FC_StartFlag, FC_EndFlag, i)
 	return antNum, startingRoom, endingRoom, Tunnels
 }

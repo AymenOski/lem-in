@@ -2,10 +2,10 @@ package utils
 
 type Ants struct {
 	AntNum       int
-	Rooms        []int
-	Tunnels      map[int][]int
-	StartingRoom int
-	EndingRoom   int
+	Rooms        []string
+	Tunnels      map[string][]string
+	StartingRoom string
+	EndingRoom   string
 }
 
 // The rooms names will not necessarily be numbers, and in order.
