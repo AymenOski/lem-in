@@ -13,15 +13,17 @@ func main() {
 		fmt.Println("Usage: go run ./cmd/ <input.txt> ")
 		return
 	}
-	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels := functions.ExtractingDate()
-	ants := utils.Ants{
+	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels, tempRooms := functions.ExtractingDate()
+	ants := &utils.Ants{
 		AntNum:       tempAntNum,
+		Rooms:        tempRooms,
+		Tunnels:      tempTunnels,
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
-		Tunnels:      tempTunnels,
 	}
 	fmt.Println(ants.AntNum)
 	fmt.Println(ants.StartingRoom)
 	fmt.Println(ants.EndingRoom)
+	fmt.Println(ants.Rooms)
 	fmt.Println(ants.Tunnels)
 }
