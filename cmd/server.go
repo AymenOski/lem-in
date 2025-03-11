@@ -24,6 +24,6 @@ func main() {
 	fmt.Println(ants.AntNum)
 	fmt.Println(ants.StartingRoom)
 	fmt.Println(ants.EndingRoom)
-	fmt.Println(ants.Tunnels)
 	fmt.Println(ants.Rooms)
+	fmt.Println(ants.Tunnels)
 }
