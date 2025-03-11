@@ -30,9 +30,11 @@ func ExtractingDate() (int, string, string, map[string][]string, []string) {
 	Rooms := make([]string, 0)
 	check := false
 	for scanner.Scan() {
-		// if strings.HasPrefix(scanner.Text(), "#") || strings.HasPrefix(scanner.Text(), "L") {
-		// 	continue
-		// }
+		if !(scanner.Text() == "##start") && !(scanner.Text() == "##end") {
+			if strings.HasPrefix(scanner.Text(), "#") || strings.HasPrefix(scanner.Text(), "L") {
+				continue
+			}
+		}
 		if c == 0 {
 			antNum, err = strconv.Atoi(scanner.Text())
 			if antNum <= 0 {
@@ -57,15 +59,24 @@ func ExtractingDate() (int, string, string, map[string][]string, []string) {
 		// storing data after the ##start flag
 		if check {
 			if len(scanner.Text()) > 0 {
-				Rooms = append(Rooms, scanner.Text()[:1])
+				if strings.HasPrefix(scanner.Text(), "#") {
+					// continue and dont store this data
+				} else {
+					// store this data
+					Rooms = append(Rooms, scanner.Text()[:1])
+				}
 			} else {
 				fmt.Println("ERROR: invalid data format, Missing ants starting room")
 				os.Exit(0)
 			}
 		} else if !check && c == 2 {
 			if len(scanner.Text()) > 0 {
-				endingRoom = scanner.Text()[:1]
-				c = 3
+				if strings.HasPrefix(scanner.Text(), "#") {
+					// continue and dont store this data
+				} else {
+					endingRoom = scanner.Text()[:1]
+					c = 3
+				}
 			} else {
 				fmt.Println("ERROR: invalid data format, Missing ants ending room")
 				os.Exit(0)
@@ -81,7 +92,7 @@ func ExtractingDate() (int, string, string, map[string][]string, []string) {
 		}
 		i++
 	}
-	// startingRoom = Rooms[0]
+	startingRoom = Rooms[0]
 	Rooms = append(Rooms, endingRoom)
 	FormatChekcer(FC_AntNumber, FC_StartFlag, FC_EndFlag, i)
 	return antNum, startingRoom, endingRoom, Tunnels, Rooms
