@@ -30,6 +30,7 @@ func ExtractingDate() (int, string, string, map[string][]string, []string) {
 	Rooms := make([]string, 0)
 	check := false
 	for scanner.Scan() {
+		// adding the ability to make comments
 		if !(scanner.Text() == "##start") && !(scanner.Text() == "##end") {
 			if strings.HasPrefix(scanner.Text(), "#") || strings.HasPrefix(scanner.Text(), "L") {
 				continue
