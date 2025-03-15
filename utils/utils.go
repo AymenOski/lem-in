@@ -1,13 +1,19 @@
 package utils
 
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
+
 type Coordinates struct {
 	X int
 	Y int
 }
 
 type Ants struct {
-	AntNum       int
-	Rooms        []string
+	AntNum int
+	Rooms  []string
 	// Position or should we change Rooms to a map of coordinates to room names?
 	Position     []Coordinates
 	Tunnels      map[string][]string
@@ -27,4 +33,13 @@ type Room struct {
 type Tunnels struct {
 	Room1 *Room
 	Room2 *Room
+}
+
+func Atoi(str string) int {
+	val, err := strconv.Atoi(str)
+	if err != nil {
+		fmt.Println("ERROR: invalid data format, Make sure the Coordinates are numbers")
+		os.Exit(0)
+	}
+	return val
 }
