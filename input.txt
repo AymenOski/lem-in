@@ -8,7 +8,11 @@
 6 1 5
 7 4 8
 ##end
+#comment
+#comment
+#comment
 0 9 5
+1 16 3
 0-4
 0-6
 1-3
