@@ -51,7 +51,6 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 				fmt.Println("ERROR: invalid data format, Number of ants should be greater than 0")
 				os.Exit(0)
 			}
-			fmt.Println(AntNum)
 		case val == "##start":
 			for j := i + 1; !strings.HasPrefix(Lines[j], "##end"); j++ {
 				// if its a comment skip it
@@ -71,21 +70,34 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 				i = j
 			}
 		case val == "##end":
-			if len(strings.Fields(Lines[i+1])) != 3 {
-				fmt.Println("ERROR: Invalid input format.")
-				os.Exit(0)
-			}
+			cmp := 0
 			for j := i + 1; j < len(Lines); j++ {
 				// if its a comment skip it
 				if strings.HasPrefix(Lines[j], "#") {
 					continue
 				}
-				// Storing end room and tunnels
-				tunnel := strings.Split(Lines[j], "-")
-				if len(tunnel) == 2 {
-					Tunnels[tunnel[0]] = append(Tunnels[tunnel[0]], tunnel[1])
+				if !strings.Contains(Lines[j], "-") {
+					cmp++
+					temp := strings.Fields(Lines[j])
+					if len(temp) != 3 {
+						fmt.Println("ERROR: Invalid input format.")
+						os.Exit(0)
+					} else {
+						Rooms = append(Rooms, temp[0])
+						Coord = append(Coord, utils.Coordinates{X: utils.Atoi(temp[1]), Y: utils.Atoi(temp[2])})
+					}
 				}
-				// its necessary to update i so we can reduce the number of unnecessary iterations
+				if cmp != 1 {
+					fmt.Println("ERROR: Invalid input format.")
+					os.Exit(0)
+				}
+				if strings.Contains(Lines[j], "-") {
+					// Storing end room and tunnels
+					tunnel := strings.Split(Lines[j], "-")
+					if len(tunnel) == 2 {
+						Tunnels[tunnel[0]] = append(Tunnels[tunnel[0]], tunnel[1])
+					}
+				}
 				i = j
 			}
 		}
