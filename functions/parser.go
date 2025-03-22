@@ -10,13 +10,19 @@ import (
 )
 
 func Parsing() (int, string, string, map[string][]string, []string, []utils.Coordinates) {
-	file, err := os.ReadFile("input.txt")
+	file, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println("Please create a file in the root of the project and put input to it")
 		os.Exit(0)
 	}
-	Lines := strings.Split(string(file), "\n")
+
+	delimiter := "\n"
+	if strings.Contains(string(file), "\r\n") {
+		delimiter = "\r\n"
+	}
+	Lines := strings.Split(string(file), delimiter)
+
 	AntNum := 0
 	Rooms := make([]string, 0)
 	Coord := make([]utils.Coordinates, 0)
@@ -35,8 +41,8 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 			FC_EndFlag = i
 		}
 	}
-
 	FormatChekcer(FC_StartFlag, FC_EndFlag, Rooms)
+
 	i := 0
 	for i < len(Lines) {
 		val := Lines[i]
@@ -72,8 +78,8 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 		case val == "##end":
 			cmp := 0
 			for j := i + 1; j < len(Lines); j++ {
-				// if its a comment skip it
-				if strings.HasPrefix(Lines[j], "#") {
+				// if its a comment or there is an empty line skip it
+				if strings.HasPrefix(Lines[j], "#") || Lines[j] == "" {
 					continue
 				}
 				if !strings.Contains(Lines[j], "-") {
@@ -85,18 +91,26 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 					} else {
 						Rooms = append(Rooms, temp[0])
 						Coord = append(Coord, utils.Coordinates{X: utils.Atoi(temp[1]), Y: utils.Atoi(temp[2])})
+						continue
 					}
 				}
 				if cmp != 1 {
-					fmt.Println("ERROR: Invalid input format.")
+					fmt.Println("ERROR: Invalid input format, Please ensure that there is atmost one end room.")
 					os.Exit(0)
 				}
 				if strings.Contains(Lines[j], "-") {
 					// Storing end room and tunnels
 					tunnel := strings.Split(Lines[j], "-")
-					if len(tunnel) == 2 {
-						Tunnels[tunnel[0]] = append(Tunnels[tunnel[0]], tunnel[1])
+					if len(tunnel) == 2 && tunnel[0] != "" && tunnel[1] != "" {
+						TunnelsMaker(Tunnels, tunnel[0], tunnel[1])
+						TunnelsMaker(Tunnels, tunnel[1], tunnel[0])
+					} else {
+						fmt.Println("ERROR: Invalid input format, Tunnels should be in the format of room1-room2")
+						os.Exit(0)
 					}
+				} else {
+					fmt.Println("ERROR: Invalid input format, Tunnels should be in the format of room1-room2")
+					os.Exit(0)
 				}
 				i = j
 			}
