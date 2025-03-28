@@ -15,7 +15,7 @@ func main() {
 		return
 	}
 	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels, tempRooms, tempCoord := functions.Parsing()
-	ants := &utils.Ants{
+	Ants := &utils.Ants{
 		AntNum:       tempAntNum,
 		Rooms:        tempRooms,
 		Position:     tempCoord,
@@ -23,10 +23,8 @@ func main() {
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
 	}
-	fmt.Println(ants.AntNum)
-	fmt.Println(ants.StartingRoom)
-	fmt.Println(ants.EndingRoom)
-	fmt.Println(ants.Tunnels)
-	fmt.Println(ants.Rooms)
-	fmt.Println(ants.Position)
+	list := &utils.DoublyLinkedList{}
+	for i := range Ants.Rooms {
+		list.AddRoom(Ants.Rooms[i])
+	}
 }
