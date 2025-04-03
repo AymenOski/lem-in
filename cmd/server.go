@@ -23,8 +23,9 @@ func main() {
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
 	}
-	list := &utils.DoublyLinkedList{}
+	g := &utils.Graph{Rooms: make(map[string]*utils.Room)}
 	for i := range Ants.Rooms {
-		list.AddRoom(Ants.Rooms[i])
+		g.AddRoom(Ants.Rooms[i])
 	}
+	fmt.Println(g.Rooms)
 }

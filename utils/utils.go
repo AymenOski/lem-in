@@ -12,9 +12,8 @@ type Coordinates struct {
 }
 
 type Ants struct {
-	AntNum int
-	Rooms  []string
-	// Position or should we change Rooms to a map of coordinates to room names?
+	AntNum       int
+	Rooms        []string
 	Position     []Coordinates
 	Tunnels      map[string][]string
 	StartingRoom string
@@ -24,32 +23,21 @@ type Ants struct {
 // The rooms names will not necessarily be numbers, and in order.
 // The rooms are identified by a string. it could be "A", "B", "1", "2", etc.  <--- rooms are not necessarily numbers
 
-type DoublyLinkedList struct {
-	Head *Node // Pointer to the first node
-	Tail *Node // Pointer to the last node
-}
 type Room struct {
-	RoomName string
-	AntExist bool
+	Name      string
+	Neighbors []*Room
 }
 
-// doubly linked list so we can check if there are ants in prev room and the next
-type Node struct {
-	Room *Room // Data (ant exists?)
-	Next *Node // Pointer to the next node
-	Prev *Node // Pointer to the previous node
+type Graph struct {
+	Rooms map[string]*Room
 }
 
-func (list *DoublyLinkedList) AddRoom(roomName string) {
-	newRoom := &Room{RoomName: roomName, AntExist: false}
-	newNode := &Node{Room: newRoom}
-	if list.Head == nil {
-		list.Head = newNode
-		list.Tail = newNode
-	} else {
-		newNode.Prev = list.Tail
-		list.Tail.Next = newNode
-		list.Tail = newNode
+func (g *Graph) AddRoom(roomName string) {
+	if _, exists := g.Rooms[roomName]; !exists {
+		g.Rooms[roomName] = &Room{
+			Name:      roomName,
+			Neighbors: make([]*Room, 0),
+		}
 	}
 }
 
