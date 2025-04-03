@@ -3,18 +3,19 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"lem-in/functions"
 	"lem-in/utils"
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: go run ./cmd/ <input.txt> ")
+	if len(os.Args) != 2 || !strings.HasSuffix(os.Args[1], ".txt") || len(os.Args[1]) < 5 {
+		fmt.Println("Usage: go run ./cmd/ <Input_file_name.txt> ")
 		return
 	}
 	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels, tempRooms, tempCoord := functions.Parsing()
-	ants := &utils.Ants{
+	Ants := &utils.Ants{
 		AntNum:       tempAntNum,
 		Rooms:        tempRooms,
 		Position:     tempCoord,
@@ -22,10 +23,9 @@ func main() {
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
 	}
-	fmt.Println(ants.AntNum)
-	fmt.Println(ants.StartingRoom)
-	fmt.Println(ants.EndingRoom)
-	fmt.Println(ants.Position)
-	fmt.Println(ants.Rooms)
-	fmt.Println(ants.Tunnels)
+	g := &utils.Graph{Rooms: make(map[string]*utils.Room)}
+	for i := range Ants.Rooms {
+		g.AddRoom(Ants.Rooms[i])
+	}
+	fmt.Println(g.Rooms)
 }

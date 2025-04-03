@@ -12,9 +12,8 @@ type Coordinates struct {
 }
 
 type Ants struct {
-	AntNum int
-	Rooms  []string
-	// Position or should we change Rooms to a map of coordinates to room names?
+	AntNum       int
+	Rooms        []string
 	Position     []Coordinates
 	Tunnels      map[string][]string
 	StartingRoom string
@@ -23,16 +22,23 @@ type Ants struct {
 
 // The rooms names will not necessarily be numbers, and in order.
 // The rooms are identified by a string. it could be "A", "B", "1", "2", etc.  <--- rooms are not necessarily numbers
+
 type Room struct {
-	RoomName string
-	AntExist bool
+	Name      string
+	Neighbors []*Room
 }
 
-// A tunnel joins only two rooms together never more than that.
-// meaning that a pointer can point to only one room at a time.
-type Tunnels struct {
-	Room1 *Room
-	Room2 *Room
+type Graph struct {
+	Rooms map[string]*Room
+}
+
+func (g *Graph) AddRoom(roomName string) {
+	if _, exists := g.Rooms[roomName]; !exists {
+		g.Rooms[roomName] = &Room{
+			Name:      roomName,
+			Neighbors: make([]*Room, 0),
+		}
+	}
 }
 
 func Atoi(str string) int {
