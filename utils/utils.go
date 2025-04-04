@@ -55,6 +55,44 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
+func (g *Graph) BFS(start, end string) []string {
+	queue := []string{start}
+
+	visited := make(map[string]bool)
+	visited[start] = true
+
+	prev := make(map[string]string)
+
+	for len(queue) > 0 {
+
+		current := queue[0]
+		queue = queue[1:]
+
+		if current == end {
+			break
+		}
+
+		for _, neighbor := range g.Rooms[current].Neighbors {
+			if !visited[neighbor.Name] {
+				visited[neighbor.Name] = true
+				prev[neighbor.Name] = current
+				queue = append(queue, neighbor.Name)
+			}
+		}
+	}
+
+	var path []string
+	for at := end; at != start; at = prev[at] {
+		path = append([]string{at}, path...)
+	}
+	path = append([]string{start}, path...)
+	if len(path) == 0 || path[0] != start {
+		return nil
+	}
+
+	return path
+}
+
 func Atoi(str string) int {
 	val, err := strconv.Atoi(str)
 	if err != nil {
