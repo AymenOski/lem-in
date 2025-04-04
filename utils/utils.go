@@ -41,6 +41,20 @@ func (g *Graph) AddRoom(roomName string) {
 	}
 }
 
+func (g *Graph) LinkRooms(tunnels map[string][]string) {
+	for roomName, neighbors := range tunnels {
+		for _, neighborName := range neighbors {
+			g.Rooms[roomName].Neighbors = append(g.Rooms[roomName].Neighbors, g.Rooms[neighborName])
+		}
+	}
+}
+
+func (g *Graph) PrintGraph() {
+	for _, room := range g.Rooms {
+		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name, room.Neighbors)
+	}
+}
+
 func Atoi(str string) int {
 	val, err := strconv.Atoi(str)
 	if err != nil {

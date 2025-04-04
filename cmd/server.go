@@ -23,9 +23,11 @@ func main() {
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
 	}
-	g := &utils.Graph{Rooms: make(map[string]*utils.Room)}
+	g := &utils.Graph{
+		Rooms: make(map[string]*utils.Room),
+	}
 	for i := range Ants.Rooms {
 		g.AddRoom(Ants.Rooms[i])
 	}
-	fmt.Println(g.Rooms)
+	g.LinkRooms(Ants.Tunnels)
 }
