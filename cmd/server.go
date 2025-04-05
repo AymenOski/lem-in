@@ -23,6 +23,8 @@ func main() {
 		StartingRoom: tempStartingRoom,
 		EndingRoom:   tempEndingRoom,
 	}
+	// functions.ValidCoords(Ants.Position)
+	// functions.ValidRooms(Ants.Rooms, Ants.Tunnels)
 	g := &utils.Graph{
 		Rooms: make(map[string]*utils.Room),
 	}
@@ -31,5 +33,5 @@ func main() {
 	}
 	g.LinkRooms(Ants.Tunnels)
 	s := g.BFS(Ants.StartingRoom, Ants.EndingRoom)
-	fmt.Println(s)
+	fmt.Println("Shortest Path :", s)
 }
