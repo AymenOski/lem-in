@@ -3,6 +3,7 @@ package functions
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -69,8 +70,14 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 					fmt.Println("ERROR: Invalid input format.")
 					os.Exit(0)
 				} else {
-					Rooms = append(Rooms, data[0])
-					Coord = append(Coord, utils.Coordinates{X: utils.Atoi(data[1]), Y: utils.Atoi(data[2])})
+					// checking if the rooms are not duplicated
+					if !slices.Contains(Rooms, data[0]) {
+						Rooms = append(Rooms, data[0])
+					} else {
+						fmt.Println("ERROR: Invalid input format, Room name already exists")
+						os.Exit(0)
+					}
+					Coord = append(Coord, utils.Coordinates{X: Atoi(data[1]), Y: Atoi(data[2])})
 				}
 				// its necessary to update i so we can reduce the number of unnecessary iterations
 				i = j
@@ -90,12 +97,12 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 						os.Exit(0)
 					} else {
 						Rooms = append(Rooms, temp[0])
-						Coord = append(Coord, utils.Coordinates{X: utils.Atoi(temp[1]), Y: utils.Atoi(temp[2])})
+						Coord = append(Coord, utils.Coordinates{X: Atoi(temp[1]), Y: Atoi(temp[2])})
 						continue
 					}
 				}
 				if cmp != 1 {
-					fmt.Println("ERROR: Invalid input format, Please ensure that there is atmost one end room.")
+					fmt.Println("ERROR: Invalid input format, Please ensure that there is only one ending room.")
 					os.Exit(0)
 				}
 				if strings.Contains(Lines[j], "-") {

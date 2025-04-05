@@ -2,8 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 )
 
 type Coordinates struct {
@@ -44,7 +42,9 @@ func (g *Graph) AddRoom(roomName string) {
 func (g *Graph) LinkRooms(tunnels map[string][]string) {
 	for roomName, neighbors := range tunnels {
 		for _, neighborName := range neighbors {
-			g.Rooms[roomName].Neighbors = append(g.Rooms[roomName].Neighbors, g.Rooms[neighborName])
+			if g.Rooms[roomName] != nil && g.Rooms[neighborName] != nil {
+				g.Rooms[roomName].Neighbors = append(g.Rooms[roomName].Neighbors, g.Rooms[neighborName])
+			}
 		}
 	}
 }
@@ -91,13 +91,4 @@ func (g *Graph) BFS(start, end string) []string {
 	}
 
 	return path
-}
-
-func Atoi(str string) int {
-	val, err := strconv.Atoi(str)
-	if err != nil {
-		fmt.Println("ERROR: invalid data format, Make sure the Coordinates are numbers")
-		os.Exit(0)
-	}
-	return val
 }
