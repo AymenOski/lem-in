@@ -32,6 +32,5 @@ func main() {
 		g.AddRoom(Ants.Rooms[i])
 	}
 	g.LinkRooms(Ants.Tunnels)
-	s := g.BFS(Ants.StartingRoom, Ants.EndingRoom)
-	fmt.Println("Shortest Path :", s)
+	g.BFS(Ants.StartingRoom, Ants.EndingRoom, Ants.AntNum)
 }

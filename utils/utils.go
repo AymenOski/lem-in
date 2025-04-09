@@ -2,7 +2,12 @@ package utils
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"sync"
 )
+
+var Mu sync.Mutex
 
 type Coordinates struct {
 	X int
@@ -18,11 +23,9 @@ type Ants struct {
 	EndingRoom   string
 }
 
-// The rooms names will not necessarily be numbers, and in order.
-// The rooms are identified by a string. it could be "A", "B", "1", "2", etc.  <--- rooms are not necessarily numbers
-
 type Room struct {
 	Name      string
+	Visited   bool
 	Neighbors []*Room
 }
 
@@ -55,17 +58,19 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
-func (g *Graph) BFS(start, end string) []string {
+func (g *Graph) BFS(start, end string, AntNum int) {
+	c := 1
+	temp := strconv.Itoa(c)
+	str := fmt.Sprintf("L" + temp + "-")
+
 	queue := []string{start}
-
-	visited := make(map[string]bool)
-	visited[start] = true
-
+	g.Rooms[start].Visited = true
 	prev := make(map[string]string)
 
 	for len(queue) > 0 {
 
 		current := queue[0]
+		// deleat from queue
 		queue = queue[1:]
 
 		if current == end {
@@ -73,8 +78,8 @@ func (g *Graph) BFS(start, end string) []string {
 		}
 
 		for _, neighbor := range g.Rooms[current].Neighbors {
-			if !visited[neighbor.Name] {
-				visited[neighbor.Name] = true
+			if !neighbor.Visited {
+				neighbor.Visited = true
 				prev[neighbor.Name] = current
 				queue = append(queue, neighbor.Name)
 			}
@@ -87,8 +92,16 @@ func (g *Graph) BFS(start, end string) []string {
 	}
 	path = append([]string{start}, path...)
 	if len(path) == 0 || path[0] != start {
-		return nil
+		fmt.Println("No path found")
+		os.Exit(0)
 	}
-
-	return path
+	// matrix := [][]string{}
+	for _, room := range path[1:] {
+		str += room
+		fmt.Println(str)
+		str = str[:len(str)-len(room)]
+	}
+	path = nil
+	AntNum--
+	c++
 }
