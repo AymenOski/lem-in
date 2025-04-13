@@ -33,6 +33,10 @@ func main() {
 	}
 	g.LinkRooms(Ants.Tunnels)
 	ants := functions.CreateAnts(Ants.AntNum, g.Rooms[Ants.StartingRoom])
-	ants[0].CurrentRoom.Occupied = true
-	g.BFS(Ants.StartingRoom, Ants.EndingRoom, ants)
+	for _, ant := range ants {
+		if ant.CurrentRoom == g.Rooms[Ants.StartingRoom] {
+			g.BFS(Ants.StartingRoom, Ants.EndingRoom, ant)
+		}
+	}
+	
 }

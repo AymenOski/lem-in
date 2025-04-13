@@ -21,7 +21,6 @@ type Ants struct {
 type Ant struct {
 	Id          string
 	CurrentRoom *Room
-	Path        []string
 }
 
 type Room struct {
@@ -32,6 +31,7 @@ type Room struct {
 
 type Graph struct {
 	Rooms map[string]*Room
+	Paths [][]string
 }
 
 func (g *Graph) AddRoom(roomName string) {
@@ -59,50 +59,37 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
-func (g *Graph) BFS(start, end string, ants []*Ant) {
-
+func (g *Graph) BFS(start, end string, ant *Ant) {
 	queue := []string{start}
+	visited := make(map[string]bool)
+	visited[start] = true
+
 	prev := make(map[string]string)
-	str := ""
-	// c := 0
-	allAntsAtEnd := false
-	for !allAntsAtEnd {
-		for _, Ant := range ants {
-			for len(queue) > 0 {
-				current := queue[0]
-				// deleat from queue
-				queue = queue[1:]
 
-				if current == end {
-					// creating a specefic path for each ant
-					for at := end; at != start; at = prev[at] {
-						Ant.Path = append([]string{at}, Ant.Path...)
-					}
-					Ant.CurrentRoom = g.Rooms[Ant.Path[0]]
-					Ant.CurrentRoom.Occupied = true
-					str += fmt.Sprintf("%v-%v", Ant.Id, Ant.CurrentRoom)
-					Ant.Path = Ant.Path[1:]
-					queue = []string{start}
-					continue
-				}
+	for len(queue) > 0 {
 
-				for _, neighbor := range g.Rooms[current].Neighbors {
-					if !neighbor.Occupied {
-						prev[neighbor.Name] = current
-						queue = append(queue, neighbor.Name)
-					}
-				}
-			}
+		current := queue[0]
+		queue = queue[1:]
 
+		if current == end {
+			break
 		}
-		for i, Ant := range ants {
-			if Ant.CurrentRoom.Name != end {
-				Ant.CurrentRoom.Occupied = false
-				break
-			}
-			if i == len(ants)-1 {
-				allAntsAtEnd = true
+
+		for _, neighbor := range g.Rooms[current].Neighbors {
+			if !visited[neighbor.Name] && !neighbor.Occupied {
+				visited[neighbor.Name] = true
+				prev[neighbor.Name] = current
+				queue = append(queue, neighbor.Name)
 			}
 		}
 	}
+
+	var path []string
+	for at := end; at != ""; at = prev[at] {
+		if at != end {
+			g.Rooms[at].Occupied = true
+		}
+		path = append([]string{at}, path...)
+	}
+	g.Paths = append(g.Paths, path)
 }
