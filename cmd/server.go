@@ -32,6 +32,7 @@ func main() {
 		g.AddRoom(Ants.Rooms[i])
 	}
 	g.LinkRooms(Ants.Tunnels)
-	s := g.BFS(Ants.StartingRoom, Ants.EndingRoom)
-	fmt.Println("Shortest Path :", s)
+	ants := functions.CreateAnts(Ants.AntNum, g.Rooms[Ants.StartingRoom])
+	ants[0].CurrentRoom.Occupied = true
+	g.BFS(Ants.StartingRoom, Ants.EndingRoom, ants)
 }

@@ -18,11 +18,15 @@ type Ants struct {
 	EndingRoom   string
 }
 
-// The rooms names will not necessarily be numbers, and in order.
-// The rooms are identified by a string. it could be "A", "B", "1", "2", etc.  <--- rooms are not necessarily numbers
+type Ant struct {
+	Id          string
+	CurrentRoom *Room
+	Path        []string
+}
 
 type Room struct {
 	Name      string
+	Occupied  bool
 	Neighbors []*Room
 }
 
@@ -55,40 +59,50 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
-func (g *Graph) BFS(start, end string) []string {
+func (g *Graph) BFS(start, end string, ants []*Ant) {
+
 	queue := []string{start}
-
-	visited := make(map[string]bool)
-	visited[start] = true
-
 	prev := make(map[string]string)
+	str := ""
+	// c := 0
+	allAntsAtEnd := false
+	for !allAntsAtEnd {
+		for _, Ant := range ants {
+			for len(queue) > 0 {
+				current := queue[0]
+				// deleat from queue
+				queue = queue[1:]
 
-	for len(queue) > 0 {
+				if current == end {
+					// creating a specefic path for each ant
+					for at := end; at != start; at = prev[at] {
+						Ant.Path = append([]string{at}, Ant.Path...)
+					}
+					Ant.CurrentRoom = g.Rooms[Ant.Path[0]]
+					Ant.CurrentRoom.Occupied = true
+					str += fmt.Sprintf("%v-%v", Ant.Id, Ant.CurrentRoom)
+					Ant.Path = Ant.Path[1:]
+					queue = []string{start}
+					continue
+				}
 
-		current := queue[0]
-		queue = queue[1:]
+				for _, neighbor := range g.Rooms[current].Neighbors {
+					if !neighbor.Occupied {
+						prev[neighbor.Name] = current
+						queue = append(queue, neighbor.Name)
+					}
+				}
+			}
 
-		if current == end {
-			break
 		}
-
-		for _, neighbor := range g.Rooms[current].Neighbors {
-			if !visited[neighbor.Name] {
-				visited[neighbor.Name] = true
-				prev[neighbor.Name] = current
-				queue = append(queue, neighbor.Name)
+		for i, Ant := range ants {
+			if Ant.CurrentRoom.Name != end {
+				Ant.CurrentRoom.Occupied = false
+				break
+			}
+			if i == len(ants)-1 {
+				allAntsAtEnd = true
 			}
 		}
 	}
-
-	var path []string
-	for at := end; at != start; at = prev[at] {
-		path = append([]string{at}, path...)
-	}
-	path = append([]string{start}, path...)
-	if len(path) == 0 || path[0] != start {
-		return nil
-	}
-
-	return path
 }
