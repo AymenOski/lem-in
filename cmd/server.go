@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"lem-in/functions"
@@ -33,10 +34,19 @@ func main() {
 	}
 	g.LinkRooms(Ants.Tunnels)
 	ants := functions.CreateAnts(Ants.AntNum, g.Rooms[Ants.StartingRoom])
+
 	for _, ant := range ants {
 		if ant.CurrentRoom == g.Rooms[Ants.StartingRoom] {
-			g.BFS(Ants.StartingRoom, Ants.EndingRoom, ant)
+			Path := g.BFS(Ants.StartingRoom, Ants.EndingRoom, ant)
+
+			if Path != nil {
+				g.Paths = append(g.Paths, Path)
+			}
 		}
 	}
+	sort.Slice(g.Paths, func(i, j int) bool {
+		return len(g.Paths[i]) < len(g.Paths[j])
+	})
 	
+	g.Simulation(ants)
 }

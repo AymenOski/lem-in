@@ -59,7 +59,7 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
-func (g *Graph) BFS(start, end string, ant *Ant) {
+func (g *Graph) BFS(start, end string, ant *Ant) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
@@ -91,5 +91,8 @@ func (g *Graph) BFS(start, end string, ant *Ant) {
 		}
 		path = append([]string{at}, path...)
 	}
-	g.Paths = append(g.Paths, path)
+	return path
+}
+
+func (g *Graph) Simulation(ants []*Ant) {
 }
