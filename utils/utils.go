@@ -104,22 +104,24 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	}
 
 	// Assign paths to ants
-	for i, ant := range ants {
+	i := 0
+	for _, ant := range ants {
 		if !ant.HasTakenPath {
 			for {
-				// Skip paths with length 1 (single room, no movement possible)
+				if i >= len(g.Paths) {
+					i = 0 // If we are out of paths , start over and give the shortest path to the ant
+				}
+				// Skip ants that dont have a path
 				if len(g.Paths[i]) == 1 {
 					i++
-					if i >= len(g.Paths) {
-						i = 0 // If we reach the end of paths, restart from the beginning
-					}
 					continue
 				}
 
 				// Assign path to the ant
 				ant.ThePath = g.Paths[i]
+				i++
 				ant.HasTakenPath = true
-				ant.Step = 0
+				ant.Step = 1
 				break
 			}
 		}
@@ -128,25 +130,28 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	allReachedEnd := false
 
 	for !allReachedEnd {
-		
+
 		for _, ant := range ants {
-			
+
 			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.ThePath) {
 				nextRoomName := ant.ThePath[ant.Step]
 				nextRoom := g.Rooms[nextRoomName]
-				
-				if !nextRoom.Occupied {
+
+				if !nextRoom.Occupied || nextRoom.Name == End {
 					ant.CurrentRoom = nextRoom
 					ant.CurrentRoom.Occupied = true
-					
+
 					ant.Step++
 					ant.HasMoved = true
 				}
 			}
-			
+
 			allReachedEnd = true
-			if ant.CurrentRoom != g.Rooms[End] {
-				allReachedEnd = false
+
+			for _, ant := range ants {
+				if ant.CurrentRoom != g.Rooms[End] {
+					allReachedEnd = false
+				}
 			}
 		}
 
@@ -157,6 +162,8 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				ant.CurrentRoom.Occupied = false
 			}
 		}
+
 		fmt.Println()
+
 	}
 }
