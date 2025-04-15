@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels, tempRooms, tempCoord := functions.Parsing()
-	Ants := &utils.Ants{
+	Colony := &utils.Colony{
 		AntNum:       tempAntNum,
 		Rooms:        tempRooms,
 		Position:     tempCoord,
@@ -29,15 +29,15 @@ func main() {
 	g := &utils.Graph{
 		Rooms: make(map[string]*utils.Room),
 	}
-	for i := range Ants.Rooms {
-		g.AddRoom(Ants.Rooms[i])
+	for i := range Colony.Rooms {
+		g.AddRoom(Colony.Rooms[i])
 	}
-	g.LinkRooms(Ants.Tunnels)
-	ants := functions.CreateAnts(Ants.AntNum, g.Rooms[Ants.StartingRoom])
+	g.LinkRooms(Colony.Tunnels)
+	ants := functions.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
 
 	for _, ant := range ants {
-		if ant.CurrentRoom == g.Rooms[Ants.StartingRoom] {
-			Path := g.BFS(Ants.StartingRoom, Ants.EndingRoom, ant)
+		if ant.CurrentRoom == g.Rooms[Colony.StartingRoom] {
+			Path := g.BFS(Colony.StartingRoom, Colony.EndingRoom, ant)
 
 			if Path != nil {
 				g.Paths = append(g.Paths, Path)
@@ -47,6 +47,6 @@ func main() {
 	sort.Slice(g.Paths, func(i, j int) bool {
 		return len(g.Paths[i]) < len(g.Paths[j])
 	})
-	
-	g.Simulation(ants)
+
+	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }
