@@ -9,7 +9,7 @@ type Coordinates struct {
 	Y int
 }
 
-type Ants struct {
+type Colony struct {
 	AntNum       int
 	Rooms        []string
 	Position     []Coordinates
@@ -19,8 +19,12 @@ type Ants struct {
 }
 
 type Ant struct {
-	Id          string
-	CurrentRoom *Room
+	Id           string
+	CurrentRoom  *Room
+	ThePath      []string
+	HasMoved     bool
+	HasTakenPath bool
+	Step         int
 }
 
 type Room struct {
@@ -94,5 +98,65 @@ func (g *Graph) BFS(start, end string, ant *Ant) []string {
 	return path
 }
 
-func (g *Graph) Simulation(ants []*Ant) {
+func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
+	for _, room := range g.Rooms {
+		room.Occupied = false
+	}
+
+	// Assign paths to ants
+	for i, ant := range ants {
+		if !ant.HasTakenPath {
+			for {
+				// Skip paths with length 1 (single room, no movement possible)
+				if len(g.Paths[i]) == 1 {
+					i++
+					if i >= len(g.Paths) {
+						i = 0 // If we reach the end of paths, restart from the beginning
+					}
+					continue
+				}
+
+				// Assign path to the ant
+				ant.ThePath = g.Paths[i]
+				ant.HasTakenPath = true
+				ant.Step = 0
+				break
+			}
+		}
+	}
+
+	allReachedEnd := false
+
+	for !allReachedEnd {
+		
+		for _, ant := range ants {
+			
+			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.ThePath) {
+				nextRoomName := ant.ThePath[ant.Step]
+				nextRoom := g.Rooms[nextRoomName]
+				
+				if !nextRoom.Occupied {
+					ant.CurrentRoom = nextRoom
+					ant.CurrentRoom.Occupied = true
+					
+					ant.Step++
+					ant.HasMoved = true
+				}
+			}
+			
+			allReachedEnd = true
+			if ant.CurrentRoom != g.Rooms[End] {
+				allReachedEnd = false
+			}
+		}
+
+		for _, ant := range ants {
+			if ant.HasMoved {
+				fmt.Printf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
+				ant.HasMoved = false
+				ant.CurrentRoom.Occupied = false
+			}
+		}
+		fmt.Println()
+	}
 }
