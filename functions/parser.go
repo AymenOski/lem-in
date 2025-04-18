@@ -115,6 +115,10 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 			}
 			// this case is to store data before ##start flag if there is any
 		case !before:
+			if strings.HasPrefix(val, "#") || val == "" {
+				i++
+				continue
+			}
 			// checking if the rooms are not duplicated
 			if !slices.Contains(Rooms, strings.Fields(val)[0]) {
 				Rooms = append(Rooms, strings.Fields(val)[0])

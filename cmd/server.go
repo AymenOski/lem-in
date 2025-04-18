@@ -57,5 +57,7 @@ func main() {
 		return len(g.Paths[i]) < len(g.Paths[j])
 	})
 
+	fmt.Println(Colony.Tunnels)
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
+
 }
