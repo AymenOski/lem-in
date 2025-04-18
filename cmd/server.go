@@ -16,7 +16,8 @@ func main() {
 		return
 	}
 
-	tempAntNum, tempStartingRoom, tempEndingRoom, tempTunnels, tempRooms, tempCoord := functions.Parsing()
+	tempAntNum, tempStartingRoom, tempEndingRoom,
+		tempTunnels, tempRooms, tempCoord := functions.Parsing()
 
 	Colony := &utils.Colony{
 		AntNum:       tempAntNum,
@@ -37,11 +38,9 @@ func main() {
 	for i := range Colony.Rooms {
 		g.AddRoom(Colony.Rooms[i])
 	}
-
 	g.LinkRooms(Colony.Tunnels)
 
 	ants := functions.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
-
 	for _, ant := range ants {
 		if ant.CurrentRoom == g.Rooms[Colony.StartingRoom] {
 
@@ -49,10 +48,11 @@ func main() {
 
 			if Path != nil {
 				g.Paths = append(g.Paths, Path)
+			} else {
+				// what could be wrong here?
 			}
 		}
 	}
-
 	sort.Slice(g.Paths, func(i, j int) bool {
 		return len(g.Paths[i]) < len(g.Paths[j])
 	})

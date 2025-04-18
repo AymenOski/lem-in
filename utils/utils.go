@@ -59,7 +59,7 @@ func (g *Graph) LinkRooms(tunnels map[string][]string) {
 
 func (g *Graph) PrintGraph() {
 	for _, room := range g.Rooms {
-		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name, room.Neighbors)
+		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name , room.Neighbors)
 	}
 }
 
@@ -67,7 +67,6 @@ func (g *Graph) BFS(start, end string, ant *Ant) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
-
 	prev := make(map[string]string)
 
 	for len(queue) > 0 {
@@ -94,6 +93,7 @@ func (g *Graph) BFS(start, end string, ant *Ant) []string {
 			g.Rooms[at].Occupied = true
 		}
 		path = append([]string{at}, path...)
+
 	}
 	return path
 }
@@ -120,8 +120,9 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				// Assign path to the ant
 				ant.ThePath = g.Paths[i]
 				i++
+
 				ant.HasTakenPath = true
-				ant.Step = 1
+				ant.Step = 0
 				break
 			}
 		}
@@ -134,7 +135,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		for _, ant := range ants {
 
 			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.ThePath) {
-				nextRoomName := ant.ThePath[ant.Step]
+				nextRoomName := ant.ThePath[ant.Step+1]
 				nextRoom := g.Rooms[nextRoomName]
 
 				if !nextRoom.Occupied || nextRoom.Name == End {
@@ -147,12 +148,12 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 			}
 
 			allReachedEnd = true
-
 			for _, ant := range ants {
 				if ant.CurrentRoom != g.Rooms[End] {
 					allReachedEnd = false
 				}
 			}
+
 		}
 
 		for _, ant := range ants {
@@ -162,8 +163,11 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				ant.CurrentRoom.Occupied = false
 			}
 		}
-
 		fmt.Println()
 
 	}
+
+	// for _, ant := range ants {
+	// 	fmt.Println(ant.ThePath)
+	// }
 }
