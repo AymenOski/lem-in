@@ -41,23 +41,19 @@ func main() {
 	g.LinkRooms(Colony.Tunnels)
 
 	ants := functions.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
-	for _, ant := range ants {
-		if ant.CurrentRoom == g.Rooms[Colony.StartingRoom] {
 
-			Path := g.BFS(Colony.StartingRoom, Colony.EndingRoom, ant)
-
-			if Path != nil {
-				g.Paths = append(g.Paths, Path)
-			} else {
-				// what could be wrong here?
-			}
+	for {
+		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+		if path == nil {
+			break
 		}
+		g.Paths = append(g.Paths, path)
 	}
+	fmt.Println(g.Paths)
+
 	sort.Slice(g.Paths, func(i, j int) bool {
 		return len(g.Paths[i]) < len(g.Paths[j])
 	})
 
-	fmt.Println(Colony.Tunnels)
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
-
 }

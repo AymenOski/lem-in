@@ -21,7 +21,7 @@ type Colony struct {
 type Ant struct {
 	Id           string
 	CurrentRoom  *Room
-	ThePath      []string
+	Path         []string
 	HasMoved     bool
 	HasTakenPath bool
 	Step         int
@@ -59,16 +59,15 @@ func (g *Graph) LinkRooms(tunnels map[string][]string) {
 
 func (g *Graph) PrintGraph() {
 	for _, room := range g.Rooms {
-		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name , room.Neighbors)
+		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name, room.Neighbors)
 	}
 }
 
-func (g *Graph) BFS(start, end string, ant *Ant) []string {
+func (g *Graph) BFS(start, end string) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
 	prev := make(map[string]string)
-
 	for len(queue) > 0 {
 
 		current := queue[0]
@@ -86,56 +85,65 @@ func (g *Graph) BFS(start, end string, ant *Ant) []string {
 			}
 		}
 	}
-
+	if !visited[end] {
+		return nil
+	}
 	var path []string
 	for at := end; at != ""; at = prev[at] {
-		if at != end {
+		path = append([]string{at}, path...)
+		if at != start && at != end {
 			g.Rooms[at].Occupied = true
 		}
-		path = append([]string{at}, path...)
-
 	}
 	return path
 }
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
+	pathLens := make([]int, len(g.Paths))
+
 	for _, room := range g.Rooms {
 		room.Occupied = false
 	}
 
-	// Assign paths to ants
-	i := 0
-	for _, ant := range ants {
-		if !ant.HasTakenPath {
-			for {
-				if i >= len(g.Paths) {
-					i = 0 // If we are out of paths , start over and give the shortest path to the ant
-				}
-				// Skip ants that dont have a path
-				if len(g.Paths[i]) == 1 {
-					i++
-					continue
-				}
-
-				// Assign path to the ant
-				ant.ThePath = g.Paths[i]
-				i++
-
-				ant.HasTakenPath = true
-				ant.Step = 0
-				break
-			}
+	for i := range g.Paths {
+		for j := i; j < len(g.Paths); j++ {
+			pathLens[j-i] = len(g.Paths[j])
 		}
 	}
 
+	// Assign paths to ants
+	for _, ant := range ants {
+		if !ant.HasTakenPath {
+
+			temp := pathLens[0]
+			tempIndex := 0
+
+			// find the best path for the ant
+			for i, val := range pathLens {
+				if val < temp {
+					temp = val
+					tempIndex = i
+				}
+			}
+
+			// Assign path to the ant
+			ant.Path = g.Paths[tempIndex]
+			pathLens[tempIndex]++
+			ant.HasTakenPath = true
+			ant.Step = 0
+
+		}
+	}
+	// for _, ant := range ants {
+	// 	fmt.Println(ant.Path)
+	// }
 	allReachedEnd := false
 
 	for !allReachedEnd {
-
+		// break
 		for _, ant := range ants {
-
-			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.ThePath) {
-				nextRoomName := ant.ThePath[ant.Step+1]
+			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
+				nextRoomName := ant.Path[ant.Step+1]
 				nextRoom := g.Rooms[nextRoomName]
 
 				if !nextRoom.Occupied || nextRoom.Name == End {
@@ -146,14 +154,6 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 					ant.HasMoved = true
 				}
 			}
-
-			allReachedEnd = true
-			for _, ant := range ants {
-				if ant.CurrentRoom != g.Rooms[End] {
-					allReachedEnd = false
-				}
-			}
-
 		}
 
 		for _, ant := range ants {
@@ -165,9 +165,16 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 		fmt.Println()
 
+		allReachedEnd = true
+		for _, ant := range ants {
+			if ant.CurrentRoom != g.Rooms[End] {
+				allReachedEnd = false
+			}
+		}
+
 	}
 
 	// for _, ant := range ants {
-	// 	fmt.Println(ant.ThePath)
+	// 	fmt.Println(ant.Path)
 	// }
 }
