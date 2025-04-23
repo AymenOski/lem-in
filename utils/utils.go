@@ -19,12 +19,11 @@ type Colony struct {
 }
 
 type Ant struct {
-	Id           string
-	CurrentRoom  *Room
-	Path         []string
-	HasMoved     bool
-	HasTakenPath bool
-	Step         int
+	Id          string
+	CurrentRoom *Room
+	Path        []string
+	HasMoved    bool
+	Step        int
 }
 
 type Room struct {
@@ -68,7 +67,8 @@ func (g *Graph) BFS(start, end string) []string {
 	visited := make(map[string]bool)
 	visited[start] = true
 	prev := make(map[string]string)
-	for len(queue) > 0 {
+	for len(queue) >= 0 {
+		fmt.Println("ss")
 
 		current := queue[0]
 		queue = queue[1:]
@@ -76,7 +76,7 @@ func (g *Graph) BFS(start, end string) []string {
 		if current == end {
 			break
 		}
-
+		
 		for _, neighbor := range g.Rooms[current].Neighbors {
 			if !visited[neighbor.Name] && !neighbor.Occupied {
 				visited[neighbor.Name] = true
@@ -86,6 +86,7 @@ func (g *Graph) BFS(start, end string) []string {
 		}
 	}
 	if !visited[end] {
+		fmt.Println("kk")
 		return nil
 	}
 	var path []string
@@ -105,42 +106,28 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		room.Occupied = false
 	}
 
-	for i := range g.Paths {
-		for j := i; j < len(g.Paths); j++ {
-			pathLens[j-i] = len(g.Paths[j])
-		}
+	for i := range pathLens {
+		pathLens[i] = len(g.Paths[i])
 	}
-
 	// Assign paths to ants
 	for _, ant := range ants {
-		if !ant.HasTakenPath {
-
-			temp := pathLens[0]
-			tempIndex := 0
-
-			// find the best path for the ant
-			for i, val := range pathLens {
-				if val < temp {
-					temp = val
-					tempIndex = i
-				}
+		
+		// we are implementing a !(greedy algorithm) to assign what is best for the greater good of the colony
+		bestIdx := 0
+		// we pick the shortest path based on lenght
+		for i := 1; i < len(pathLens); i++ {
+			if pathLens[bestIdx] > pathLens[i] {
+				bestIdx = i
 			}
-
-			// Assign path to the ant
-			ant.Path = g.Paths[tempIndex]
-			pathLens[tempIndex]++
-			ant.HasTakenPath = true
-			ant.Step = 0
-
 		}
+		
+		ant.Path = g.Paths[bestIdx]
+		
+		pathLens[bestIdx]++
 	}
-	// for _, ant := range ants {
-	// 	fmt.Println(ant.Path)
-	// }
 	allReachedEnd := false
 
 	for !allReachedEnd {
-		// break
 		for _, ant := range ants {
 			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
 				nextRoomName := ant.Path[ant.Step+1]

@@ -49,7 +49,6 @@ func main() {
 		}
 		g.Paths = append(g.Paths, path)
 	}
-	fmt.Println(g.Paths)
 
 	sort.Slice(g.Paths, func(i, j int) bool {
 		return len(g.Paths[i]) < len(g.Paths[j])
