@@ -63,6 +63,15 @@ func (g *Graph) PrintGraph() {
 	}
 }
 
+func hasLengthString(paths [][]string) bool {
+	for i := range paths {
+		if len(paths[i]) == 2 {
+			return true
+		}
+	}
+	return false
+}
+
 func (g *Graph) BFS(start, end string) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
@@ -76,9 +85,13 @@ func (g *Graph) BFS(start, end string) []string {
 		if current == end {
 			break
 		}
+
 		for _, neighbor := range g.Rooms[current].Neighbors {
-			fmt.Println(g.Rooms[end].Occupied)
+			if hasLengthString(g.Paths) {
+				continue
+			}
 			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
+				fmt.Println(g.Rooms[current].Neighbors[0].Name)
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
 				queue = append(queue, neighbor.Name)
@@ -95,12 +108,12 @@ func (g *Graph) BFS(start, end string) []string {
 			g.Rooms[at].Occupied = true
 		}
 	}
+
 	return path
 }
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	pathLens := make([]int, len(g.Paths))
-	fmt.Println(g.Paths)
 	for _, room := range g.Rooms {
 		room.Occupied = false
 	}
