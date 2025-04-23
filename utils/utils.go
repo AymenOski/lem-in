@@ -47,6 +47,7 @@ func (g *Graph) AddRoom(roomName string) {
 }
 
 func (g *Graph) LinkRooms(tunnels map[string][]string) {
+	// bidirectional links between rooms
 	for roomName, neighbors := range tunnels {
 		for _, neighborName := range neighbors {
 			if g.Rooms[roomName] != nil && g.Rooms[neighborName] != nil {
@@ -67,8 +68,7 @@ func (g *Graph) BFS(start, end string) []string {
 	visited := make(map[string]bool)
 	visited[start] = true
 	prev := make(map[string]string)
-	for len(queue) >= 0 {
-		fmt.Println("ss")
+	for len(queue) > 0 {
 
 		current := queue[0]
 		queue = queue[1:]
@@ -76,9 +76,9 @@ func (g *Graph) BFS(start, end string) []string {
 		if current == end {
 			break
 		}
-		
 		for _, neighbor := range g.Rooms[current].Neighbors {
-			if !visited[neighbor.Name] && !neighbor.Occupied {
+			fmt.Println(g.Rooms[end].Occupied)
+			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
 				queue = append(queue, neighbor.Name)
@@ -86,7 +86,6 @@ func (g *Graph) BFS(start, end string) []string {
 		}
 	}
 	if !visited[end] {
-		fmt.Println("kk")
 		return nil
 	}
 	var path []string
@@ -101,7 +100,7 @@ func (g *Graph) BFS(start, end string) []string {
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	pathLens := make([]int, len(g.Paths))
-
+	fmt.Println(g.Paths)
 	for _, room := range g.Rooms {
 		room.Occupied = false
 	}
@@ -111,7 +110,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	}
 	// Assign paths to ants
 	for _, ant := range ants {
-		
+
 		// we are implementing a !(greedy algorithm) to assign what is best for the greater good of the colony
 		bestIdx := 0
 		// we pick the shortest path based on lenght
@@ -120,9 +119,9 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				bestIdx = i
 			}
 		}
-		
+
 		ant.Path = g.Paths[bestIdx]
-		
+
 		pathLens[bestIdx]++
 	}
 	allReachedEnd := false

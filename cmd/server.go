@@ -39,9 +39,7 @@ func main() {
 		g.AddRoom(Colony.Rooms[i])
 	}
 	g.LinkRooms(Colony.Tunnels)
-
 	ants := functions.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
-
 	for {
 		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
 		if path == nil {
