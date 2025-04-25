@@ -77,6 +77,7 @@ func (g *Graph) BFS(start, end string) []string {
 	visited := make(map[string]bool)
 	visited[start] = true
 	prev := make(map[string]string)
+	skipStartEndPath := false
 	for len(queue) > 0 {
 
 		current := queue[0]
@@ -87,11 +88,13 @@ func (g *Graph) BFS(start, end string) []string {
 		}
 
 		for _, neighbor := range g.Rooms[current].Neighbors {
-			if hasLengthString(g.Paths) {
-				continue
+			if !skipStartEndPath {
+				if hasLengthString(g.Paths) && neighbor.Name == end {
+					skipStartEndPath = true
+					continue
+				}
 			}
 			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
-				fmt.Println(g.Rooms[current].Neighbors[0].Name)
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
 				queue = append(queue, neighbor.Name)
