@@ -126,20 +126,23 @@ func (g *Graph) BFS(start, end string) []string {
 }
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
-	for _ , room := range g.Rooms {
+	pathLens := make([]int, len(g.Paths))
+
+	for _, room := range g.Rooms {
 		room.Occupied = false
 	}
-	pathLens := make([]int, len(g.Paths))
 
 	for i := range pathLens {
 		pathLens[i] = len(g.Paths[i])
 	}
+
 	// Assign paths to ants
 	for _, ant := range ants {
-
-		// we are implementing a !(greedy algorithm) to assign what is best for the greater good of the colony
+		// Assign paths using a non-greedy strategy to balance load across paths
+		// The goal is to optimize total movement time for the entire colony
 		bestIdx := 0
-		// we pick the shortest path based on lenght
+
+		// Select the shortest available path to reduce overall steps needed
 		for i := 1; i < len(pathLens); i++ {
 			if pathLens[bestIdx] > pathLens[i] {
 				bestIdx = i
@@ -147,17 +150,18 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 
 		ant.Path = g.Paths[bestIdx]
-
 		pathLens[bestIdx]++
 	}
-	allReachedEnd := false
 
+	allReachedEnd := false
 	for !allReachedEnd {
 		tunnelCrowding := false
 
+		// start the round
 		for _, ant := range ants {
 			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
-				// skip all the ants that have this specefic path
+				// Each tunnel can only be used once per turn.
+				// Skip ants on direct Start-End path if already used this round (tunnelCrowding = true)
 				if len(ant.Path) == 2 && tunnelCrowding {
 					continue
 				}
@@ -181,6 +185,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 			}
 		}
 
+		// Only print ants that actually moved this round (using HasMoved flag)
 		for _, ant := range ants {
 			if ant.HasMoved {
 				fmt.Printf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
