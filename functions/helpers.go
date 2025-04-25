@@ -57,14 +57,3 @@ func ValidRooms(Rooms []string, Tunnels map[string][]string) {
 	// }
 }
 
-func CreateAnts(AntNum int, StartingRoom *utils.Room) []*utils.Ant {
-	ants := []*utils.Ant{}
-	for i := 1; i <= AntNum; i++ {
-		ant := &utils.Ant{
-			Id:          fmt.Sprintf("L%d", i),
-			CurrentRoom: StartingRoom,
-		}
-		ants = append(ants, ant)
-	}
-	return ants
-}
