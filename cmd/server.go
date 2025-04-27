@@ -45,6 +45,10 @@ func main() {
 		}
 		g.Paths = append(g.Paths, path)
 	}
-
+	if g.Paths == nil {
+		fmt.Println("ERROR: No path was found")
+		os.Exit(0)
+	}
+	fmt.Println(g.Paths)
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }

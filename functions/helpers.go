@@ -26,6 +26,17 @@ func Atoi(str string) int {
 	return val
 }
 
+func CleanStr(str string) string {
+	s := ""
+	for _, val := range str {
+		if val == ' ' {
+			continue
+		}
+		s += string(val)
+	}
+	return s
+}
+
 func ValidCoords(Coords []utils.Coordinates) {
 	//=========//====//====//====//====//====//====//====//====//====//====//====//====//
 	// logic not valid --> O(n^2) : we need a map to store the coordinates instead
@@ -56,4 +67,3 @@ func ValidRooms(Rooms []string, Tunnels map[string][]string) {
 	// 	}
 	// }
 }
-
