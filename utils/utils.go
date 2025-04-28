@@ -92,7 +92,7 @@ func (g *Graph) BFS(start, end string) []string {
 	skipStartEndPath := false
 	for len(queue) > 0 {
 
-		current := queue[0]
+		current := queue[0] // start
 		queue = queue[1:]
 
 		if current == end {
@@ -119,7 +119,11 @@ func (g *Graph) BFS(start, end string) []string {
 	var path []string
 	for at := end; at != ""; at = prev[at] {
 		path = append([]string{at}, path...)
+		// for _, val := range g.Rooms[end].Neighbors {
+		// if at == val.Name {
 		g.Rooms[at].Occupied = true
+		// }
+		// }
 	}
 
 	return path
