@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 
 	"lem-in/functions"
@@ -34,28 +33,29 @@ func main() {
 	g := &utils.Graph{
 		Rooms: make(map[string]*utils.Room),
 	}
-
 	for i := range Colony.Rooms {
 		g.AddRoom(Colony.Rooms[i])
 	}
 	g.LinkRooms(Colony.Tunnels)
-
-	ants := functions.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
-	for _, ant := range ants {
-		if ant.CurrentRoom == g.Rooms[Colony.StartingRoom] {
-
-			Path := g.BFS(Colony.StartingRoom, Colony.EndingRoom, ant)
-
-			if Path != nil {
-				g.Paths = append(g.Paths, Path)
-			} else {
-				// what could be wrong here?
-			}
+	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
+	// next loop condition is for the fact that we need to find all the paths possible
+	for {
+	
+		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+		if path == nil {
+			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
+			g.Paths = [][]string{}
+			g.Paths = append(g.Paths, bestCombo...)
+			break
 		}
-	}
-	sort.Slice(g.Paths, func(i, j int) bool {
-		return len(g.Paths[i]) < len(g.Paths[j])
-	})
+		g.Paths = append(g.Paths, path)
 
+	}
+
+	fmt.Println(g.Paths)
+	if g.Paths == nil {
+		fmt.Println("ERROR: No path was found")
+		os.Exit(0)
+	}
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }

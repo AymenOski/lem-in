@@ -19,12 +19,11 @@ type Colony struct {
 }
 
 type Ant struct {
-	Id           string
-	CurrentRoom  *Room
-	ThePath      []string
-	HasMoved     bool
-	HasTakenPath bool
-	Step         int
+	Id          string
+	CurrentRoom *Room
+	Path        []string
+	HasMoved    bool
+	Step        int
 }
 
 type Room struct {
@@ -48,6 +47,7 @@ func (g *Graph) AddRoom(roomName string) {
 }
 
 func (g *Graph) LinkRooms(tunnels map[string][]string) {
+	// bidirectional links between rooms
 	for roomName, neighbors := range tunnels {
 		for _, neighborName := range neighbors {
 			if g.Rooms[roomName] != nil && g.Rooms[neighborName] != nil {
@@ -57,21 +57,119 @@ func (g *Graph) LinkRooms(tunnels map[string][]string) {
 	}
 }
 
+func CreateAnts(AntNum int, StartingRoom *Room) []*Ant {
+	ants := []*Ant{}
+	for i := 1; i <= AntNum; i++ {
+		ant := &Ant{
+			Id:          fmt.Sprintf("L%d", i),
+			CurrentRoom: StartingRoom,
+		}
+		ants = append(ants, ant)
+	}
+	return ants
+}
+
 func (g *Graph) PrintGraph() {
 	for _, room := range g.Rooms {
-		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name , room.Neighbors)
+		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name, room.Neighbors)
 	}
 }
 
-func (g *Graph) BFS(start, end string, ant *Ant) []string {
+func hasLengthString(paths [][]string) bool {
+	for i := range paths {
+		if len(paths[i]) == 2 {
+			return true
+		}
+	}
+	return false
+}
+
+func (g *Graph) Combinations(start, end string) [][]string {
+	AllCombination := [][][]string{}
+	ComboElements := [][]string{}
+	for _, neighbor := range g.Rooms[start].Neighbors {
+		neighbor.Occupied = false
+	}
+
+	// we do a loop for the probability
+	for _, ThePathToTest := range g.Paths {
+		for _, room := range ThePathToTest {
+			g.Rooms[room].Occupied = true
+		}
+
+		for {
+
+			path := g.BFS(start, end)
+			if path == nil {
+				// the path test with
+				ComboElements = append(ComboElements, ThePathToTest)
+				for _, rooms := range ComboElements {
+					for _, v := range rooms {
+						g.Rooms[v].Occupied = false
+					}
+				}
+				break
+			}
+			for _, room := range path {
+				g.Rooms[room].Occupied = true
+			}
+			// the path we found at this iteration
+			ComboElements = append(ComboElements, path)
+		}
+		AllCombination = append(AllCombination, ComboElements)
+		ComboElements = [][]string{}
+	}
+
+	// -----------for debuging purposes :-------- \\
+	// last line after 🔵 Group will be the path to test with \\
+
+	for i, group := range AllCombination {
+		fmt.Printf("🔵 Group %d:\n", i+1)
+		for j, path := range group {
+			fmt.Printf("  🔸 Path %d: %v\n", j+1, path)
+		}
+		fmt.Println()
+	}
+
+	return Filtring(AllCombination)
+}
+
+func Filtring(allCombos [][][]string) [][]string {
+	var bestCombo [][]string
+	maxPaths := -1
+	minRooms := int(^uint(0) >> 1)
+
+	for _, combo := range allCombos {
+		numPaths := len(combo)
+		roomSet := make(map[string]bool)
+
+		for _, path := range combo {
+			for _, room := range path {
+				roomSet[room] = true
+			}
+		}
+		numRooms := len(roomSet)
+
+		if numPaths > maxPaths || (numPaths == maxPaths && numRooms < minRooms) {
+			bestCombo = combo
+			maxPaths = numPaths
+			minRooms = numRooms
+		}
+	}
+
+	return bestCombo
+}
+
+func (g *Graph) BFS(start, end string) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
 	prev := make(map[string]string)
+	skipStartEndPath := false
 
 	for len(queue) > 0 {
 
-		current := queue[0]
+		current := queue[0] // start
 		queue = queue[1:]
 
 		if current == end {
@@ -79,65 +177,87 @@ func (g *Graph) BFS(start, end string, ant *Ant) []string {
 		}
 
 		for _, neighbor := range g.Rooms[current].Neighbors {
-			if !visited[neighbor.Name] && !neighbor.Occupied {
+			if !skipStartEndPath {
+				if hasLengthString(g.Paths) && neighbor.Name == end {
+					skipStartEndPath = true
+					continue
+				}
+			}
+			// for _, path := range g.Paths {
+			// 	if path[0] == neighbor.Name {
+			// 		continue
+			// 	}
+			// }
+			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
 				queue = append(queue, neighbor.Name)
 			}
 		}
 	}
-
+	if !visited[end] {
+		return nil
+	}
 	var path []string
 	for at := end; at != ""; at = prev[at] {
-		if at != end {
+		if prev[at] == start {
 			g.Rooms[at].Occupied = true
 		}
 		path = append([]string{at}, path...)
-
 	}
 	return path
 }
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
+	pathLens := make([]int, len(g.Paths))
+
 	for _, room := range g.Rooms {
 		room.Occupied = false
 	}
 
+	for i := range pathLens {
+		pathLens[i] = len(g.Paths[i])
+	}
+
 	// Assign paths to ants
-	i := 0
 	for _, ant := range ants {
-		if !ant.HasTakenPath {
-			for {
-				if i >= len(g.Paths) {
-					i = 0 // If we are out of paths , start over and give the shortest path to the ant
-				}
-				// Skip ants that dont have a path
-				if len(g.Paths[i]) == 1 {
-					i++
-					continue
-				}
+		// Assign paths using a non-greedy strategy to balance load across paths
+		// The goal is to optimize total movement time for the entire colony
+		bestIdx := 0
 
-				// Assign path to the ant
-				ant.ThePath = g.Paths[i]
-				i++
-
-				ant.HasTakenPath = true
-				ant.Step = 0
-				break
+		// Select the shortest available path to reduce overall steps needed
+		for i := 1; i < len(pathLens); i++ {
+			if pathLens[bestIdx] > pathLens[i] {
+				bestIdx = i
 			}
 		}
+
+		ant.Path = g.Paths[bestIdx]
+		pathLens[bestIdx]++
 	}
 
 	allReachedEnd := false
-
 	for !allReachedEnd {
+		tunnelCrowding := false
 
+		// start the round
 		for _, ant := range ants {
-
-			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.ThePath) {
-				nextRoomName := ant.ThePath[ant.Step+1]
+			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
+				// Each tunnel can only be used once per turn.
+				// Skip ants on direct Start-End path if already used this round (tunnelCrowding = true)
+				if len(ant.Path) == 2 && tunnelCrowding {
+					continue
+				}
+				nextRoomName := ant.Path[ant.Step+1]
 				nextRoom := g.Rooms[nextRoomName]
-
+				if !tunnelCrowding {
+					if nextRoom.Name == End && ant.CurrentRoom.Name == Start {
+						tunnelCrowding = true
+						ant.Step++
+						ant.CurrentRoom = g.Rooms[End]
+						ant.HasMoved = true
+					}
+				}
 				if !nextRoom.Occupied || nextRoom.Name == End {
 					ant.CurrentRoom = nextRoom
 					ant.CurrentRoom.Occupied = true
@@ -146,16 +266,9 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 					ant.HasMoved = true
 				}
 			}
-
-			allReachedEnd = true
-			for _, ant := range ants {
-				if ant.CurrentRoom != g.Rooms[End] {
-					allReachedEnd = false
-				}
-			}
-
 		}
 
+		// Only print ants that actually moved this round (using HasMoved flag)
 		for _, ant := range ants {
 			if ant.HasMoved {
 				fmt.Printf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
@@ -165,9 +278,16 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 		fmt.Println()
 
+		allReachedEnd = true
+		for _, ant := range ants {
+			if ant.CurrentRoom != g.Rooms[End] {
+				allReachedEnd = false
+			}
+		}
+
 	}
 
 	// for _, ant := range ants {
-	// 	fmt.Println(ant.ThePath)
+	// 	fmt.Println(ant.Path)
 	// }
 }

@@ -41,7 +41,7 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 
 		case strings.HasPrefix(Lines[i], "L"):
 			fmt.Println("ERROR: Invalid input format, Your room name starts with an L")
-			os.Exit(0)
+			os.Exit(1)
 
 		case Lines[i] == "##start":
 			FC_StartFlag = i
@@ -63,15 +63,15 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 		switch {
 		case i == 0:
 
-			AntNum, err = strconv.Atoi(val)
+			AntNum, err = strconv.Atoi(CleanStr(val))
 			if err != nil {
 				fmt.Println("ERROR: Invalid input format, Please ensure the number of ants is provided as an integer on the first line.")
-				os.Exit(0)
+				os.Exit(1)
 			}
 
 			if AntNum <= 0 {
 				fmt.Println("ERROR: invalid data format, Number of ants should be greater than 0")
-				os.Exit(0)
+				os.Exit(1)
 			}
 
 		case val == "##start":
@@ -94,7 +94,7 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 				// Storing staring room ,rooms and coordinates
 				if len(strings.Fields(Lines[j])) != 3 {
 					fmt.Println("ERROR: Invalid input format.")
-					os.Exit(0)
+					os.Exit(1)
 
 				} else {
 
@@ -103,7 +103,7 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 						Rooms = append(Rooms, strings.Fields(Lines[j])[0])
 					} else {
 						fmt.Println("ERROR: Invalid input format, Room name already exists")
-						os.Exit(0)
+						os.Exit(1)
 					}
 
 					Coord = append(Coord, utils.Coordinates{X: Atoi(strings.Fields(Lines[j])[1]), Y: Atoi(strings.Fields(Lines[j])[2])})
@@ -115,12 +115,16 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 			}
 			// this case is to store data before ##start flag if there is any
 		case !before:
+			if strings.HasPrefix(val, "#") || val == "" {
+				i++
+				continue
+			}
 			// checking if the rooms are not duplicated
 			if !slices.Contains(Rooms, strings.Fields(val)[0]) {
 				Rooms = append(Rooms, strings.Fields(val)[0])
 			} else {
 				fmt.Println("ERROR: Invalid input format, Room name already exists")
-				os.Exit(0)
+				os.Exit(1)
 			}
 
 			Coord = append(Coord, utils.Coordinates{X: Atoi(strings.Fields(val)[1]), Y: Atoi(strings.Fields(val)[2])})
@@ -143,7 +147,7 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 
 					if len(strings.Fields(Lines[j])) != 3 {
 						fmt.Println("ERROR: Invalid input format, somthing is wrong with the rooms")
-						os.Exit(0)
+						os.Exit(1)
 
 					} else {
 						Rooms = append(Rooms, strings.Fields(Lines[j])[0])
@@ -165,12 +169,12 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 
 					} else {
 						fmt.Println("ERROR: Invalid input format, Tunnels should be in the format of room1-room2")
-						os.Exit(0)
+						os.Exit(1)
 					}
 
 				} else {
 					fmt.Println("ERROR: Invalid input format, Tunnels should be in the format of room1-room2")
-					os.Exit(0)
+					os.Exit(1)
 				}
 
 				i = j
