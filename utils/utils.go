@@ -87,11 +87,12 @@ func hasLengthString(paths [][]string) bool {
 func (g *Graph) Combinations(start, end string) [][]string {
 	AllCombination := [][][]string{}
 	ComboElements := [][]string{}
+
 	for _, neighbor := range g.Rooms[start].Neighbors {
 		neighbor.Occupied = false
 	}
 
-	// we do a loop for the probability
+	// calculating all the probabilities
 	for _, ThePathToTest := range g.Paths {
 		for _, room := range ThePathToTest {
 			g.Rooms[room].Occupied = true
@@ -100,19 +101,25 @@ func (g *Graph) Combinations(start, end string) [][]string {
 		for {
 
 			path := g.BFS(start, end)
+
 			if path == nil {
+
 				// the path test with
 				ComboElements = append(ComboElements, ThePathToTest)
+
 				for _, rooms := range ComboElements {
 					for _, v := range rooms {
 						g.Rooms[v].Occupied = false
 					}
 				}
+
 				break
 			}
+
 			for _, room := range path {
 				g.Rooms[room].Occupied = true
 			}
+
 			// the path we found at this iteration
 			ComboElements = append(ComboElements, path)
 		}
@@ -169,7 +176,7 @@ func (g *Graph) BFS(start, end string) []string {
 
 	for len(queue) > 0 {
 
-		current := queue[0] // start
+		current := queue[0]
 		queue = queue[1:]
 
 		if current == end {
@@ -183,11 +190,7 @@ func (g *Graph) BFS(start, end string) []string {
 					continue
 				}
 			}
-			// for _, path := range g.Paths {
-			// 	if path[0] == neighbor.Name {
-			// 		continue
-			// 	}
-			// }
+
 			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
@@ -198,13 +201,16 @@ func (g *Graph) BFS(start, end string) []string {
 	if !visited[end] {
 		return nil
 	}
+
 	var path []string
+
 	for at := end; at != ""; at = prev[at] {
 		if prev[at] == start {
 			g.Rooms[at].Occupied = true
 		}
 		path = append([]string{at}, path...)
 	}
+
 	return path
 }
 
@@ -219,13 +225,13 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		pathLens[i] = len(g.Paths[i])
 	}
 
-	// Assign paths to ants
+	// Assign the right path to the ants
 	for _, ant := range ants {
 		// Assign paths using a non-greedy strategy to balance load across paths
 		// The goal is to optimize total movement time for the entire colony
 		bestIdx := 0
 
-		// Select the shortest available path to reduce overall steps needed
+		// Selecting the shortest available path to reduce overall steps needed
 		for i := 1; i < len(pathLens); i++ {
 			if pathLens[bestIdx] > pathLens[i] {
 				bestIdx = i
@@ -235,12 +241,15 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		ant.Path = g.Paths[bestIdx]
 		pathLens[bestIdx]++
 	}
+
 	c := 0
+
 	allReachedEnd := false
+
 	for !allReachedEnd {
 		tunnelCrowding := false
 
-		// start the round
+		// start one round at a time
 		for _, ant := range ants {
 			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
 				// Each tunnel can only be used once per turn.
@@ -248,8 +257,10 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				if len(ant.Path) == 2 && tunnelCrowding {
 					continue
 				}
+
 				nextRoomName := ant.Path[ant.Step+1]
 				nextRoom := g.Rooms[nextRoomName]
+
 				if !tunnelCrowding {
 					if nextRoom.Name == End && ant.CurrentRoom.Name == Start {
 						tunnelCrowding = true
@@ -258,6 +269,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 						ant.HasMoved = true
 					}
 				}
+
 				if !nextRoom.Occupied || nextRoom.Name == End {
 					ant.CurrentRoom = nextRoom
 					ant.CurrentRoom.Occupied = true
