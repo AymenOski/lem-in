@@ -27,6 +27,8 @@ func main() {
 		EndingRoom:   tempEndingRoom,
 	}
 
+	//-- ⚠️ we need also to check if the tunnels edges does exists as rooms
+
 	// functions.ValidCoords(Ants.Position)
 	// functions.ValidRooms(Ants.Rooms, Ants.Tunnels)
 
@@ -38,9 +40,30 @@ func main() {
 	}
 	g.LinkRooms(Colony.Tunnels)
 	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
-	// next loop condition is for the fact that we need to find all the paths possible
+
+	// this for loop is to stop unecessary processing
 	for {
-	
+
+		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+		if path == nil {
+			if len(g.Paths) >= Colony.AntNum {
+				if g.Paths == nil {
+					fmt.Println("ERROR: No path was found")
+					os.Exit(0)
+				}
+				g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
+				os.Exit(0)
+			} else {
+				break
+			}
+		}
+		g.Paths = append(g.Paths, path)
+
+	}
+
+	// finding all paths and choosing the best combination possible
+	for {
+
 		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
 		if path == nil {
 			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
@@ -52,10 +75,11 @@ func main() {
 
 	}
 
-	fmt.Println(g.Paths)
 	if g.Paths == nil {
 		fmt.Println("ERROR: No path was found")
 		os.Exit(0)
 	}
+
+	fmt.Println("g.Paths :", g.Paths)
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }
