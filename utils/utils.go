@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Coordinates struct {
@@ -87,11 +88,12 @@ func hasLengthString(paths [][]string) bool {
 func (g *Graph) Combinations(start, end string) [][]string {
 	AllCombination := [][][]string{}
 	ComboElements := [][]string{}
+	g.Paths = RemoveDuplicates(g.Paths)
 	for _, neighbor := range g.Rooms[start].Neighbors {
 		neighbor.Occupied = false
 	}
 
-	// we do a loop for the probability
+	// this loop for calculating all the probabilities
 	for _, ThePathToTest := range g.Paths {
 		for _, room := range ThePathToTest {
 			g.Rooms[room].Occupied = true
@@ -169,7 +171,7 @@ func (g *Graph) BFS(start, end string) []string {
 
 	for len(queue) > 0 {
 
-		current := queue[0] // start
+		current := queue[0]
 		queue = queue[1:]
 
 		if current == end {
@@ -183,11 +185,7 @@ func (g *Graph) BFS(start, end string) []string {
 					continue
 				}
 			}
-			// for _, path := range g.Paths {
-			// 	if path[0] == neighbor.Name {
-			// 		continue
-			// 	}
-			// }
+
 			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
@@ -199,12 +197,33 @@ func (g *Graph) BFS(start, end string) []string {
 		return nil
 	}
 	var path []string
+	startNeighbor := ""
+
 	for at := end; at != ""; at = prev[at] {
+
 		if prev[at] == start {
-			g.Rooms[at].Occupied = true
+			startNeighbor = at
+			fmt.Println("at :", at)
 		}
 		path = append([]string{at}, path...)
 	}
+
+	// a necessary check to avoid missing important paths
+	g.Rooms[prev[end]].Occupied = true
+	fmt.Println("path :", path)
+	temp := g.BFS(start, end)
+	g.Rooms[prev[end]].Occupied = false
+	fmt.Println("len(path)=", len(path))
+	fmt.Println("len(temp=)", len(temp))
+	if len(temp) == len(path) {
+		fmt.Println("temp :", temp)
+		g.Paths = append(g.Paths, temp)
+	} else if len(temp) == 0 || len(temp) > len(path) {
+		return path
+	}
+
+	g.Rooms[startNeighbor].Occupied = true
+
 	return path
 }
 
@@ -218,7 +237,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	for i := range pathLens {
 		pathLens[i] = len(g.Paths[i])
 	}
-
+	c := 0
 	// Assign paths to ants
 	for _, ant := range ants {
 		// Assign paths using a non-greedy strategy to balance load across paths
@@ -276,6 +295,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 				ant.CurrentRoom.Occupied = false
 			}
 		}
+		c++
 		fmt.Println()
 
 		allReachedEnd = true
@@ -286,8 +306,27 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 
 	}
-
+	fmt.Println("Steps :", c)
 	// for _, ant := range ants {
 	// 	fmt.Println(ant.Path)
 	// }
+}
+
+func RemoveDuplicates(paths [][]string) [][]string {
+	unique := make(map[string]bool)
+	result := [][]string{}
+
+	for _, path := range paths {
+		key := MakeKey(path)
+		if !unique[key] {
+			unique[key] = true
+			result = append(result, path)
+		}
+	}
+
+	return result
+}
+
+func MakeKey(path []string) string {
+	return strings.Join(path, ",")
 }

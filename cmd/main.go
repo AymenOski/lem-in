@@ -29,33 +29,38 @@ func main() {
 
 	// functions.ValidCoords(Ants.Position)
 	// functions.ValidRooms(Ants.Rooms, Ants.Tunnels)
-
+	
 	g := &utils.Graph{
 		Rooms: make(map[string]*utils.Room),
 	}
+
 	for i := range Colony.Rooms {
 		g.AddRoom(Colony.Rooms[i])
 	}
+
 	g.LinkRooms(Colony.Tunnels)
 	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
+	
 	// next loop condition is for the fact that we need to find all the paths possible
 	for {
-	
 		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+
 		if path == nil {
 			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
 			g.Paths = [][]string{}
 			g.Paths = append(g.Paths, bestCombo...)
 			break
 		}
+
 		g.Paths = append(g.Paths, path)
-
 	}
 
-	fmt.Println(g.Paths)
-	if g.Paths == nil {
+	if len(g.Paths) == 0 {
 		fmt.Println("ERROR: No path was found")
-		os.Exit(0)
+		return
 	}
+	
+	fmt.Println(g.Paths)
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
+	fmt.Println("LenPaths", len(g.Paths))
 }

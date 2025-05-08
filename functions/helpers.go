@@ -5,8 +5,6 @@ import (
 	"os"
 	"slices"
 	"strconv"
-
-	"lem-in/utils"
 )
 
 func TunnelsMaker(Tunnels map[string][]string, a string, b string) {
@@ -37,33 +35,33 @@ func CleanStr(str string) string {
 	return s
 }
 
-func ValidCoords(Coords []utils.Coordinates) {
-	//=========//====//====//====//====//====//====//====//====//====//====//====//====//
-	// logic not valid --> O(n^2) : we need a map to store the coordinates instead
-	//====//====//====//====//====//====//====//====//====//====//====//====//====//====//
+// func ValidCoords(Coords []utils.Coordinates) {
+// 	//=========//====//====//====//====//====//====//====//====//====//====//====//====//
+// 	// logic not valid --> O(n^2) : we need a map to store the coordinates instead
+// 	//====//====//====//====//====//====//====//====//====//====//====//====//====//====//
 
-	// for i := range Coords {
-	// 	for j := range Coords {
-	// 		if i != j {
-	// 			if Coords[i].X == Coords[j].X && Coords[i].Y == Coords[j].Y {
-	// 				fmt.Println("ERROR: invalid data format, duplicate coordinates")
-	// 				os.Exit(0)
-	// 			}
-	// 		}
-	// 	}
-	// }
-}
+// 	// for i := range Coords {
+// 	// 	for j := range Coords {
+// 	// 		if i != j {
+// 	// 			if Coords[i].X == Coords[j].X && Coords[i].Y == Coords[j].Y {
+// 	// 				fmt.Println("ERROR: invalid data format, duplicate coordinates")
+// 	// 				os.Exit(0)
+// 	// 			}
+// 	// 		}
+// 	// 	}
+// 	// }
+// }
 
-func ValidRooms(Rooms []string, Tunnels map[string][]string) {
-	// intoSlice := []string{}
-	// // converting the map keys to a slice
-	// for val := range Tunnels {
-	// 	intoSlice = append(intoSlice, val)
-	// }
-	// for i := range Rooms {
-	// 	if slices.Contains(intoSlice, Rooms[i]) {
-	// 		fmt.Println("ERROR: invalid data format, Rooms issue detected")
-	// 		os.Exit(0)
-	// 	}
-	// }
-}
+// func ValidRooms(Rooms []string, Tunnels map[string][]string) {
+// 	// intoSlice := []string{}
+// 	// // converting the map keys to a slice
+// 	// for val := range Tunnels {
+// 	// 	intoSlice = append(intoSlice, val)
+// 	// }
+// 	// for i := range Rooms {
+// 	// 	if slices.Contains(intoSlice, Rooms[i]) {
+// 	// 		fmt.Println("ERROR: invalid data format, Rooms issue detected")
+// 	// 		os.Exit(0)
+// 	// 	}
+// 	// }
+// }
