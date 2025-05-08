@@ -40,7 +40,7 @@ func main() {
 	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
 	// next loop condition is for the fact that we need to find all the paths possible
 	for {
-	
+
 		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
 		if path == nil {
 			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
@@ -52,10 +52,10 @@ func main() {
 
 	}
 
-	fmt.Println(g.Paths)
 	if g.Paths == nil {
 		fmt.Println("ERROR: No path was found")
 		os.Exit(0)
 	}
+	fmt.Println("Len(paths)", len(g.Paths))
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }
