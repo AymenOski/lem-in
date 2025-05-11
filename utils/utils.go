@@ -130,13 +130,13 @@ func (g *Graph) Combinations(start, end string) [][]string {
 	// -----------for debuging purposes :-------- \\
 	// last line after 🔵 Group will be the path to test with \\
 
-	// for i, group := range AllCombination {
-	// 	fmt.Printf("🔵 Group %d:\n", i+1)
-	// 	for j, path := range group {
-	// 		fmt.Printf("  🔸 Path %d: %v\n", j+1, path)
-	// 	}
-	// 	fmt.Println()
-	// }
+	for i, group := range AllCombination {
+		fmt.Printf("🔵 Group %d:\n", i+1)
+		for j, path := range group {
+			fmt.Printf("  🔸 Path %d: %v\n", j+1, path)
+		}
+		fmt.Println()
+	}
 
 	return Filtring(AllCombination)
 }

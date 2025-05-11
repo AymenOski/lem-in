@@ -80,6 +80,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Println("g.Paths :", g.Paths)
+	fmt.Println("len(g.Paths) :", len(g.Paths))
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }
