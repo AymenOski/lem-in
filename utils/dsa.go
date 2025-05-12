@@ -65,28 +65,3 @@ func hasLengthString(paths [][]string) bool {
 	return false
 }
 
-func Filtring(allCombos [][][]string) [][]string {
-	var bestCombo [][]string
-	maxPaths := -1
-	minRooms := int(^uint(0) >> 1)
-
-	for _, combo := range allCombos {
-		numPaths := len(combo)
-		roomSet := make(map[string]bool)
-
-		for _, path := range combo {
-			for _, room := range path {
-				roomSet[room] = true
-			}
-		}
-		numRooms := len(roomSet)
-
-		if numPaths > maxPaths || (numPaths == maxPaths && numRooms < minRooms) {
-			bestCombo = combo
-			maxPaths = numPaths
-			minRooms = numRooms
-		}
-	}
-
-	return bestCombo
-}
