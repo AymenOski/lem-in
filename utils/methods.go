@@ -3,7 +3,10 @@ package utils
 import "fmt"
 
 func GraphConstructor() *Graph {
-	return &Graph{Rooms: make(map[string]*Room)}
+	return &Graph{
+		Rooms: make(map[string]*Room),
+		Data:  ParseInfo{Coords: make(map[[2]int]bool)},
+	}
 }
 
 func (g *Graph) LinkRooms(tunnels map[string][]string) {

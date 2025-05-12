@@ -36,12 +36,14 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, &ErrorMessage{Msg: constant.ErrFileIssue}
 	}
 	defer file.Close()
 	graph := utils.GraphConstructor()
+
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
@@ -75,6 +77,7 @@ func ParseLine(graph *utils.Graph, line string) error {
 }
 
 func ParseAntNumber(graph *utils.Graph, line string) error {
+	graph.Col = &utils.Colony{}
 	n, err := strconv.Atoi(line)
 	if err != nil {
 		return &ErrorMessage{Msg: constant.ErrAnts}
@@ -108,6 +111,7 @@ func ParseRooms(graph *utils.Graph, line string) error {
 				graph.Col.EndingRoom = room
 			}
 			graph.Rooms[room] = node
+			graph.Col.Rooms = append(graph.Col.Rooms, node.Name)
 		} else if graph.Col.StartingRoom != "" && graph.Col.EndingRoom != "" {
 			graph.Data.Phase = constant.LinksField
 			graph.Data.Coords = nil // free up memory from rooms coords because they are unusable
@@ -120,6 +124,9 @@ func ParseRooms(graph *utils.Graph, line string) error {
 }
 
 func ParseLinks(graph *utils.Graph, line string) error {
+	if graph.Col.Tunnels == nil {
+		graph.Col.Tunnels = make(map[string][]string)
+	}
 	firstRoom, secondRoom := GetLink(line)
 	if firstRoom == "" || secondRoom == "" {
 		return &ErrorMessage{Msg: constant.ErrLink}
@@ -132,6 +139,9 @@ func ParseLinks(graph *utils.Graph, line string) error {
 	}
 	node1 := graph.Rooms[firstRoom]
 	node2 := graph.Rooms[secondRoom]
+
+	graph.Col.Tunnels[firstRoom] = append(graph.Col.Tunnels[firstRoom], secondRoom)
+	graph.Col.Tunnels[secondRoom] = append(graph.Col.Tunnels[secondRoom], firstRoom)
 
 	node1.Neighbors = append(node1.Neighbors, node2)
 	node2.Neighbors = append(node2.Neighbors, node1)

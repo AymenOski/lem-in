@@ -12,7 +12,6 @@ type Coordinates struct {
 type Colony struct {
 	AntNum       int
 	Rooms        []string
-	Position     []Coordinates
 	Tunnels      map[string][]string
 	StartingRoom string
 	EndingRoom   string

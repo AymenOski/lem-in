@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"lem-in/functions"
+	"lem-in/parse"
 	"lem-in/utils"
 )
 
@@ -15,43 +15,28 @@ func main() {
 		return
 	}
 
-	tempAntNum, tempStartingRoom, tempEndingRoom,
-		tempTunnels, tempRooms, tempCoord := functions.Parsing()
+	g, _ := parse.FileToGraph(os.Args[1])
 
-	Colony := &utils.Colony{
-		AntNum:       tempAntNum,
-		Rooms:        tempRooms,
-		Position:     tempCoord,
-		Tunnels:      tempTunnels,
-		StartingRoom: tempStartingRoom,
-		EndingRoom:   tempEndingRoom,
-	}
 
 	//-- ⚠️ we need also to check if the tunnels edges does exists as rooms
 
-	// functions.ValidCoords(Ants.Position)
-	// functions.ValidRooms(Ants.Rooms, Ants.Tunnels)
-
-	g := &utils.Graph{
-		Rooms: make(map[string]*utils.Room),
+	for _, room := range g.Col.Rooms { // create room struct
+		g.AddRoom(room)
 	}
-	for i := range Colony.Rooms {
-		g.AddRoom(Colony.Rooms[i])
-	}
-	g.LinkRooms(Colony.Tunnels)
-	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
+	g.LinkRooms(g.Col.Tunnels)                                          // links
+	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // create ants
 
 	// this for loop is to stop unecessary processing
 	for {
 
-		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+		path := g.BFS(g.Col.StartingRoom, g.Col.EndingRoom)
 		if path == nil {
-			if len(g.Paths) >= Colony.AntNum {
+			if len(g.Paths) >= g.Col.AntNum {
 				if g.Paths == nil {
 					fmt.Println("ERROR: No path was found")
 					os.Exit(0)
 				}
-				g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
+				g.Simulation(ants, g.Col.StartingRoom, g.Col.EndingRoom)
 				os.Exit(0)
 			} else {
 				break
@@ -64,9 +49,9 @@ func main() {
 	// finding all paths and choosing the best combination possible
 	for {
 
-		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
+		path := g.BFS(g.Col.StartingRoom, g.Col.EndingRoom)
 		if path == nil {
-			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
+			bestCombo := g.Combinations(g.Col.StartingRoom, g.Col.EndingRoom)
 			g.Paths = [][]string{}
 			g.Paths = append(g.Paths, bestCombo...)
 			break
@@ -81,5 +66,5 @@ func main() {
 	}
 
 	fmt.Println("len(g.Paths) :", len(g.Paths))
-	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
+	g.Simulation(ants, g.Col.StartingRoom, g.Col.EndingRoom)
 }
