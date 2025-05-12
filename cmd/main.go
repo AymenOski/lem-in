@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"lem-in/parse"
 	"lem-in/utils"
 )
 
 func main() {
-	if len(os.Args) != 2 || !strings.HasSuffix(os.Args[1], ".txt") || len(os.Args[1]) < 5 {
+	if len(os.Args) != 2 || len(os.Args[1]) < 5 {
 		fmt.Println("Usage: go run ./cmd/ <Input_file_name.txt> ")
 		return
 	}

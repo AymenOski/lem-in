@@ -1,9 +1,10 @@
 package constant
 
 const (
-	ErrArgs      = "ERROR: invalid number of arguments"
-	ErrFileIssue = "ERROR: couldn't open the file"
-	ErrData      = "ERROR: invalid data format."
+	ErrPrefix    = "ERROR: invalid data format, "
+	ErrArgs      = "invalid number of arguments"
+	ErrFileIssue = "couldn't open the file"
+	ErrData      = "invalid data format."
 	ErrRoomName  = "room name shouldn't start with L and be empty"
 	ErrAnts      = "invalid number of ants"
 	ErrCoord     = "invalid coordinates"

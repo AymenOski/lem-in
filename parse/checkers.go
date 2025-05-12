@@ -43,10 +43,10 @@ func GetRoom(graph *utils.Graph, s string) (string, error) {
 		return "", nil // to dodge links info if they comes first in order
 	}
 	if IsRoom(split[0]) {
-		return "", &ErrorMessage{Msg: constant.ErrRoomName}
+		return "", &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrRoomName}
 	}
 	if !IsCoords(split[1], split[2], graph) {
-		return "", &ErrorMessage{Msg: constant.ErrCoord + " : dupplicated " + split[0]}
+		return "", &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrCoord + " : dupplicated " + split[0]}
 	}
 	return split[0], nil
 }
