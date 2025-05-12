@@ -1,49 +1,9 @@
 package utils
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type Coordinates struct {
-	X int
-	Y int
-}
-
-type Colony struct {
-	AntNum       int
-	Rooms        []string
-	Position     []Coordinates
-	Tunnels      map[string][]string
-	StartingRoom string
-	EndingRoom   string
-}
-
-type Ant struct {
-	Id          string
-	CurrentRoom *Room
-	Path        []string
-	HasMoved    bool
-	Step        int
-}
-
-type Room struct {
-	Name      string
-	Occupied  bool
-	Neighbors []*Room
-}
-
-type Graph struct {
-	Rooms map[string]*Room
-	Paths [][]string
-}
-
-func (g *Graph) AddRoom(roomName string) {
-	if _, exists := g.Rooms[roomName]; !exists {
-		g.Rooms[roomName] = &Room{
-			Name:      roomName,
-			Neighbors: make([]*Room, 0),
-		}
-	}
+func GraphConstructor() *Graph {
+	return &Graph{Rooms: make(map[string]*Room)}
 }
 
 func (g *Graph) LinkRooms(tunnels map[string][]string) {
@@ -57,31 +17,19 @@ func (g *Graph) LinkRooms(tunnels map[string][]string) {
 	}
 }
 
-func CreateAnts(AntNum int, StartingRoom *Room) []*Ant {
-	ants := []*Ant{}
-	for i := 1; i <= AntNum; i++ {
-		ant := &Ant{
-			Id:          fmt.Sprintf("L%d", i),
-			CurrentRoom: StartingRoom,
+func (g *Graph) AddRoom(roomName string) {
+	if _, exists := g.Rooms[roomName]; !exists {
+		g.Rooms[roomName] = &Room{
+			Name:      roomName,
+			Neighbors: make([]*Room, 0),
 		}
-		ants = append(ants, ant)
 	}
-	return ants
 }
 
 func (g *Graph) PrintGraph() {
 	for _, room := range g.Rooms {
 		fmt.Printf("Room: %s, Neighbors: %v\n", room.Name, room.Neighbors)
 	}
-}
-
-func hasLengthString(paths [][]string) bool {
-	for i := range paths {
-		if len(paths[i]) == 2 {
-			return true
-		}
-	}
-	return false
 }
 
 func (g *Graph) Combinations(start, end string) [][]string {
@@ -139,32 +87,6 @@ func (g *Graph) Combinations(start, end string) [][]string {
 	}
 
 	return Filtring(AllCombination)
-}
-
-func Filtring(allCombos [][][]string) [][]string {
-	var bestCombo [][]string
-	maxPaths := -1
-	minRooms := int(^uint(0) >> 1)
-
-	for _, combo := range allCombos {
-		numPaths := len(combo)
-		roomSet := make(map[string]bool)
-
-		for _, path := range combo {
-			for _, room := range path {
-				roomSet[room] = true
-			}
-		}
-		numRooms := len(roomSet)
-
-		if numPaths > maxPaths || (numPaths == maxPaths && numRooms < minRooms) {
-			bestCombo = combo
-			maxPaths = numPaths
-			minRooms = numRooms
-		}
-	}
-
-	return bestCombo
 }
 
 func (g *Graph) BFS(start, end string) []string {
