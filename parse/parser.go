@@ -140,6 +140,9 @@ func ParseLinks(graph *utils.Graph, line string) error {
 	node1 := graph.Rooms[firstRoom]
 	node2 := graph.Rooms[secondRoom]
 
+	if DupplicatedLink(secondRoom, graph.Col.Tunnels[firstRoom]) || DupplicatedLink(firstRoom, graph.Col.Tunnels[secondRoom]) {
+		return &ErrorMessage{Msg: constant.ErrLink + " at Room " + firstRoom + " , " + secondRoom}
+	}
 	graph.Col.Tunnels[firstRoom] = append(graph.Col.Tunnels[firstRoom], secondRoom)
 	graph.Col.Tunnels[secondRoom] = append(graph.Col.Tunnels[secondRoom], firstRoom)
 

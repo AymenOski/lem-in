@@ -15,15 +15,18 @@ func main() {
 		return
 	}
 
-	g, _ := parse.FileToGraph(os.Args[1])
-
-
+	g, err := parse.FileToGraph(os.Args[1])
+	// fmt.Println(g.Col)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	//-- ⚠️ we need also to check if the tunnels edges does exists as rooms
 
 	for _, room := range g.Col.Rooms { // create room struct
 		g.AddRoom(room)
 	}
-	g.LinkRooms(g.Col.Tunnels)                                          // links
+	// g.LinkRooms(g.Col.Tunnels)                                          // links
 	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // create ants
 
 	// this for loop is to stop unecessary processing

@@ -58,3 +58,12 @@ func GetLink(s string) (string, string) {
 	}
 	return split[0], split[1]
 }
+
+func DupplicatedLink(s string, arr []string) bool {
+	for _, link := range arr {
+		if link == s {
+			return true
+		}
+	}
+	return false
+}

@@ -9,16 +9,16 @@ func GraphConstructor() *Graph {
 	}
 }
 
-func (g *Graph) LinkRooms(tunnels map[string][]string) {
-	// bidirectional links between rooms
-	for roomName, neighbors := range tunnels {
-		for _, neighborName := range neighbors {
-			if g.Rooms[roomName] != nil && g.Rooms[neighborName] != nil {
-				g.Rooms[roomName].Neighbors = append(g.Rooms[roomName].Neighbors, g.Rooms[neighborName])
-			}
-		}
-	}
-}
+// func (g *Graph) LinkRooms(tunnels map[string][]string) {
+// 	// bidirectional links between rooms
+// 	for roomName, neighbors := range tunnels {
+// 		for _, neighborName := range neighbors {
+// 			if g.Rooms[roomName] != nil && g.Rooms[neighborName] != nil {
+// 				g.Rooms[roomName].Neighbors = append(g.Rooms[roomName].Neighbors, g.Rooms[neighborName])
+// 			}
+// 		}
+// 	}
+// }
 
 func (g *Graph) AddRoom(roomName string) {
 	if _, exists := g.Rooms[roomName]; !exists {
