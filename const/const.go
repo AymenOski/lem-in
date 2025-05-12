@@ -12,6 +12,7 @@ const (
 	ErrNoStart   = "no start room found"
 	ErrNoEnd     = "no end room found"
 	ErrLink      = "invalid link"
+	ErrSpace     = "a room or more have spaces"
 )
 
 const (

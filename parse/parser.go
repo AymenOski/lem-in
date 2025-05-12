@@ -117,7 +117,7 @@ func ParseRooms(graph *utils.Graph, line string) error {
 			graph.Data.Coords = nil // free up memory from rooms coords because they are unusable
 			return ParseLine(graph, line)
 		} else {
-			return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrNoStart + " or " + constant.ErrNoEnd}
+			return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrNoStart + " or " + constant.ErrNoEnd + " or " + constant.ErrSpace}
 		}
 	}
 	return nil
