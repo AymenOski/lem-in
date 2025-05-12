@@ -10,7 +10,7 @@ import (
 	"lem-in/utils"
 )
 
-func Parsing() (int, string, string, map[string][]string, []string, []utils.Coordinates) {
+func Parsing() (int, string, string, map[string][]string, []utils.Coordinates) {
 	file, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
@@ -184,5 +184,5 @@ func Parsing() (int, string, string, map[string][]string, []string, []utils.Coor
 		i++
 	}
 
-	return AntNum, TempStartRoom, TempEndRoom, Tunnels, Rooms, Coord
+	return AntNum, TempStartRoom, TempEndRoom, Tunnels, Coord
 }
