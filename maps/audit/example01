@@ -1,4 +1,4 @@
-1000
+10
 ##start
 start 1 6
 0 4 8
@@ -15,10 +15,6 @@ c 8 1
 k 11 2
 ##end
 end 11 6
-start-t
-n-e
-a-m
-A-c
 0-o
 E-a
 k-end
@@ -26,6 +22,10 @@ start-h
 o-n
 m-end
 t-E
+start-t
+n-e
+a-m
+A-c
 start-0
 h-A
 e-end

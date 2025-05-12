@@ -55,6 +55,7 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Scanner error:", err)
+		return nil, err
 	}
 
 	return graph, nil

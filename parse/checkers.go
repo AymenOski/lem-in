@@ -1,6 +1,9 @@
 package parse
 
 import (
+	"fmt"
+	"os"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -25,10 +28,11 @@ func IsRoom(s string) bool {
 }
 
 func IsCoords(x, y string, graph *utils.Graph) bool {
-	xn, err := strconv.Atoi(x)
-	yn, err := strconv.Atoi(y)
-	if err != nil {
-		return false
+	xn, err1 := strconv.Atoi(x)
+	yn, err2 := strconv.Atoi(y)
+	if err1 != nil || err2 != nil {
+		fmt.Println(&ErrorMessage{Msg: constant.ErrPrefix + "invalid coordinates"})
+		os.Exit(0)
 	}
 	if ok := graph.Data.Coords[[2]int{xn, yn}]; ok {
 		return false
@@ -60,10 +64,5 @@ func GetLink(s string) (string, string) {
 }
 
 func DupplicatedLink(s string, arr []string) bool {
-	for _, link := range arr {
-		if link == s {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(arr, s)
 }
