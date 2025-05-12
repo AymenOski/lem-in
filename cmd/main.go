@@ -16,11 +16,10 @@ func main() {
 	}
 
 	tempAntNum, tempStartingRoom, tempEndingRoom,
-		tempTunnels, tempRooms, tempCoord := functions.Parsing()
+		tempTunnels, tempCoord := functions.Parsing()
 
 	Colony := &utils.Colony{
 		AntNum:       tempAntNum,
-		Rooms:        tempRooms,
 		Position:     tempCoord,
 		Tunnels:      tempTunnels,
 		StartingRoom: tempStartingRoom,
@@ -35,17 +34,19 @@ func main() {
 	g := &utils.Graph{
 		Rooms: make(map[string]*utils.Room),
 	}
-	for i := range Colony.Rooms {
-		g.AddRoom(Colony.Rooms[i])
+	for room := range Colony.Tunnels {
+		g.AddRoom(room)
 	}
 	g.LinkRooms(Colony.Tunnels)
 	ants := utils.CreateAnts(Colony.AntNum, g.Rooms[Colony.StartingRoom])
 
-	// this for loop is to stop unecessary processing
+	// finding all paths and choosing the best combination possible
 	for {
 
 		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
 		if path == nil {
+
+			// this condition is to stop unecessary processing
 			if len(g.Paths) >= Colony.AntNum {
 				if g.Paths == nil {
 					fmt.Println("ERROR: No path was found")
@@ -53,19 +54,7 @@ func main() {
 				}
 				g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 				os.Exit(0)
-			} else {
-				break
 			}
-		}
-		g.Paths = append(g.Paths, path)
-
-	}
-
-	// finding all paths and choosing the best combination possible
-	for {
-
-		path := g.BFS(Colony.StartingRoom, Colony.EndingRoom)
-		if path == nil {
 			bestCombo := g.Combinations(Colony.StartingRoom, Colony.EndingRoom)
 			g.Paths = [][]string{}
 			g.Paths = append(g.Paths, bestCombo...)
@@ -80,6 +69,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Println("g.Paths :", g.Paths)
+	fmt.Println("len(g.Paths) :", len(g.Paths))
 	g.Simulation(ants, Colony.StartingRoom, Colony.EndingRoom)
 }
