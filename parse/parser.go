@@ -43,7 +43,6 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 	}
 	defer file.Close()
 	graph := utils.GraphConstructor()
-
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
@@ -56,6 +55,10 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Scanner error:", err)
 		return nil, err
+	}
+
+	if graph.Col == nil || graph.Rooms == nil {
+		return nil, &ErrorMessage{Msg: constant.ErrPrefix + "The graph is empty"}
 	}
 
 	return graph, nil

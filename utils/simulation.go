@@ -1,6 +1,9 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	pathLens := make([]int, len(g.Paths))
@@ -29,6 +32,14 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		ant.Path = g.Paths[bestIdx]
 		pathLens[bestIdx]++
 	}
+	// create the out for the standard output
+	out, err := os.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	output := string(out)
+	output += "\n\n"
 
 	c := 0
 
@@ -71,13 +82,13 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		// Only print ants that actually moved this round (using HasMoved flag)
 		for _, ant := range ants {
 			if ant.HasMoved {
-				fmt.Printf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
+				output += fmt.Sprintf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
 				ant.HasMoved = false
 				ant.CurrentRoom.Occupied = false
 			}
 		}
 		c++
-		fmt.Println()
+		output += "\n"
 
 		allReachedEnd = true
 		for _, ant := range ants {
@@ -87,6 +98,9 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 
 	}
+	output = output[:len(output)-1]
 
-	fmt.Println("Steps : ", c)
+	fmt.Println(output)
+	// for debbuging puposes
+	// fmt.Println("Steps : ", c)
 }
