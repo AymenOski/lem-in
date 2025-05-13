@@ -2,6 +2,8 @@ package utils
 
 import "fmt"
 
+// Simulation assigns ants to paths in a balanced way and simulates their step-by-step movement.
+// Each turn ensures that room occupancy and tunnel rules are respected until all ants reach the end.
 func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 	pathLens := make([]int, len(g.Paths))
 

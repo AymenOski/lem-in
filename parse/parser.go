@@ -25,11 +25,13 @@ func FileExist(filename string) error {
 		return &ErrorMessage{Msg: constant.ErrPrefix + "The File " + filename + " Doesn't Exist in The Specifeid Path"}
 	}
 	if info.IsDir() {
-		return &ErrorMessage{Msg: constant.ErrPrefix + "You Have Entered a Directory Path Istead Of a File Path"}
+		return &ErrorMessage{Msg: constant.ErrPrefix + "You Have Entered a Directory Path Instead Of a File Path"}
 	}
 	return nil
 }
 
+// FileToGraph parses a file into a Graph structure.
+// Returns a valid graph or an appropriate error if any issue occurs during processing.
 func FileToGraph(filename string) (*utils.Graph, error) {
 	var err error
 	err = FileExist(filename)

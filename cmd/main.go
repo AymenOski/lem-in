@@ -24,6 +24,6 @@ func main() {
 	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // create ants
 	compute.Solver(g, ants)
 
-	fmt.Println("len(g.Paths) :", len(g.Paths))
+	// fmt.Println("len(g.Paths) :", len(g.Paths))
 	g.Simulation(ants, g.Col.StartingRoom, g.Col.EndingRoom)
 }

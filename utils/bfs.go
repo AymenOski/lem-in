@@ -1,5 +1,6 @@
 package utils
 
+// Find one shortest path using BFS.
 func (g *Graph) BFS(start, end string) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
@@ -23,7 +24,6 @@ func (g *Graph) BFS(start, end string) []string {
 					continue
 				}
 			}
-
 			if !visited[neighbor.Name] && (!neighbor.Occupied || neighbor.Name == end) {
 				visited[neighbor.Name] = true
 				prev[neighbor.Name] = current
@@ -31,6 +31,7 @@ func (g *Graph) BFS(start, end string) []string {
 			}
 		}
 	}
+
 	if !visited[end] {
 		return nil
 	}
@@ -38,6 +39,7 @@ func (g *Graph) BFS(start, end string) []string {
 	var path []string
 
 	for at := end; at != ""; at = prev[at] {
+		// this condition is important to find all possible shortests paths
 		if prev[at] == start {
 			g.Rooms[at].Occupied = true
 		}
