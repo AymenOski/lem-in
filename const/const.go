@@ -20,3 +20,7 @@ const (
 	RoomsField        // 1
 	LinksField        // 2
 )
+
+const (
+	MAXANTNUMBER = 1000000
+)

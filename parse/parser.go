@@ -86,7 +86,7 @@ func ParseAntNumber(graph *utils.Graph, line string) error {
 	if err != nil {
 		return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrAnts}
 	}
-	if n <= 0 || n > (1<<31-1) {
+	if n <= 0 || n > constant.MAXANTNUMBER {
 		return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrAnts}
 	}
 	graph.Col.AntNum = n

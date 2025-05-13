@@ -39,7 +39,8 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		return
 	}
 	output := string(out)
-	output += "\n\n"
+	output += "\n"
+	fmt.Println(output)
 
 	c := 0
 
@@ -82,13 +83,13 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		// Only print ants that actually moved this round (using HasMoved flag)
 		for _, ant := range ants {
 			if ant.HasMoved {
-				output += fmt.Sprintf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
+				fmt.Printf("%s-%s ", ant.Id, ant.CurrentRoom.Name)
 				ant.HasMoved = false
 				ant.CurrentRoom.Occupied = false
 			}
 		}
 		c++
-		output += "\n"
+		fmt.Println()
 
 		allReachedEnd = true
 		for _, ant := range ants {
@@ -98,9 +99,6 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		}
 
 	}
-	output = output[:len(output)-1]
-
-	fmt.Println(output)
 	// for debbuging puposes
 	// fmt.Println("Steps : ", c)
 }
