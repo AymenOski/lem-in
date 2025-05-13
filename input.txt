@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 10
 ##start
 start 1 6
@@ -32,3 +33,18 @@ e-end
 c-k
 n-m
 h-n
+=======
+5
+##start
+rs 7 7
+r0 0 0
+r1 1 1
+r2 2 2
+r3 3 3
+##end
+re 8 8
+rs-r0
+r0-r1
+r1-r2
+r3-re
+>>>>>>> 362482eca05562861bad8cb13be60c2bcadcc970

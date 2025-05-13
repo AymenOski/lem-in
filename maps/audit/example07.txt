@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 100000
+=======
+1000
+>>>>>>> 362482eca05562861bad8cb13be60c2bcadcc970
 ##start
 richard 0 6
 gilfoyle 6 3

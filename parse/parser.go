@@ -25,13 +25,11 @@ func FileExist(filename string) error {
 		return &ErrorMessage{Msg: constant.ErrPrefix + "The File " + filename + " Doesn't Exist in The Specifeid Path"}
 	}
 	if info.IsDir() {
-		return &ErrorMessage{Msg: constant.ErrPrefix + "You Have Entered a Directory Path Instead Of a File Path"}
+		return &ErrorMessage{Msg: constant.ErrPrefix + "You Have Entered a Directory Path Istead Of a File Path"}
 	}
 	return nil
 }
 
-// FileToGraph parses a file into a Graph structure.
-// Returns a valid graph or an appropriate error if any issue occurs during processing.
 func FileToGraph(filename string) (*utils.Graph, error) {
 	var err error
 	err = FileExist(filename)
@@ -45,7 +43,6 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 	}
 	defer file.Close()
 	graph := utils.GraphConstructor()
-
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
@@ -58,6 +55,10 @@ func FileToGraph(filename string) (*utils.Graph, error) {
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Scanner error:", err)
 		return nil, err
+	}
+
+	if graph.Col == nil || graph.Rooms == nil {
+		return nil, &ErrorMessage{Msg: constant.ErrPrefix + "The graph is empty"}
 	}
 
 	return graph, nil
@@ -85,7 +86,7 @@ func ParseAntNumber(graph *utils.Graph, line string) error {
 	if err != nil {
 		return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrAnts}
 	}
-	if n <= 0 || n > (1<<31-1) {
+	if n <= 0 || n > constant.MAXANTNUMBER {
 		return &ErrorMessage{Msg: constant.ErrPrefix + constant.ErrAnts}
 	}
 	graph.Col.AntNum = n

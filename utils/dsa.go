@@ -1,9 +1,5 @@
 package utils
 
-import (
-	"fmt"
-)
-
 type Coordinates struct {
 	X int
 	Y int
@@ -42,27 +38,4 @@ type ParseInfo struct {
 	Coords               map[[2]int]bool
 	Phase                int
 	StartFound, EndFound bool
-}
-
-func CreateAnts(AntNum int, StartingRoom *Room) []*Ant {
-	ants := []*Ant{}
-	for i := 1; i <= AntNum; i++ {
-		ant := &Ant{
-			Id:          fmt.Sprintf("L%d", i),
-			CurrentRoom: StartingRoom,
-		}
-		ants = append(ants, ant)
-	}
-	return ants
-}
-
-// Check if we have start room attache to end room.
-// if so ,skip to another neighbor and go see other paths.
-func hasLengthString(paths [][]string) bool {
-	for i := range paths {
-		if len(paths[i]) == 2 {
-			return true
-		}
-	}
-	return false
 }

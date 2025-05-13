@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	constant "lem-in/const"
+
 	"lem-in/utils"
 )
 
@@ -33,7 +35,7 @@ func Solver(g *utils.Graph, ants []*utils.Ant) {
 	}
 
 	if len(g.Paths) == 0 {
-		fmt.Println("ERROR: No path was found")
+		fmt.Println(constant.ErrPrefix + "No path was found")
 		os.Exit(0)
 	}
 }

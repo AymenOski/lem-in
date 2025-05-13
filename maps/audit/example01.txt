@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 10
+=======
+100000
+>>>>>>> 362482eca05562861bad8cb13be60c2bcadcc970
 ##start
 start 1 6
 0 4 8
@@ -31,6 +35,7 @@ h-A
 e-end
 c-k
 n-m
+<<<<<<< HEAD
 h-n
 
 ##L1-t L2-h L3-0
@@ -47,3 +52,6 @@ h-n
 ##start → h → A → c → k → end
 
 ##start → t → E → a → m → end
+=======
+h-n
+>>>>>>> 362482eca05562861bad8cb13be60c2bcadcc970
