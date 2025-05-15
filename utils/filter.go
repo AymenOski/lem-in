@@ -61,7 +61,6 @@ func Filtring(allCombos [][][]string) [][]string {
 	var bestCombo [][]string
 	maxPaths := -1
 	minRooms := int(^uint(0) >> 1)
-
 	for _, combo := range allCombos {
 		numPaths := len(combo)
 		roomSet := make(map[string]bool)
