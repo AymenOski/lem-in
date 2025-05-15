@@ -21,9 +21,8 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
-	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // create ants
+	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // Create the nat object
 	compute.Solver(g, ants)
-	
+
 	g.Simulation(ants, g.Col.StartingRoom, g.Col.EndingRoom)
 }

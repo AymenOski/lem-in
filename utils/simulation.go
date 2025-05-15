@@ -33,6 +33,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		ant.Path = g.Paths[bestIdx]
 		pathLens[bestIdx]++
 	}
+
 	// create the out for the standard output
 	// out, err := os.ReadFile(os.Args[1])
 	// if err != nil {
@@ -52,7 +53,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 
 		// start one round at a time
 		for _, ant := range ants {
-			if ant.CurrentRoom != g.Rooms[End] && ant.Step < len(ant.Path)-1 {
+			if ant.CurrentRoom != g.Rooms[End] {
 				// Each tunnel can only be used once per turn.
 				// Skip ants on direct Start-End path if already used this round (tunnelCrowding = true)
 				if len(ant.Path) == 2 && tunnelCrowding {
@@ -96,6 +97,7 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		for _, ant := range ants {
 			if ant.CurrentRoom != g.Rooms[End] {
 				allReachedEnd = false
+				break
 			}
 		}
 
