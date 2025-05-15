@@ -72,9 +72,7 @@ r3-end
 
 ## 🚫 Error Handling
 
-* Invalid map format triggers `ERROR: invalid data format`
-* Invalid number of ants → `ERROR: invalid number of ants`
-* Missing start/end → `ERROR: no start/end room`
+![alt text](image.png)
 
 ## ✅ Rules
 
