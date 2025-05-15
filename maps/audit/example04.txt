@@ -15,16 +15,3 @@ gilfoyle-erlich
 richard-erlich
 erlich-jimYoung
 jimYoung-peter
-
-##L1-gilfoyle L3-dinish
-##L1-peter L2-gilfoyle L3-jimYoung L5-dinish
-##L2-peter L3-peter L4-gilfoyle L5-jimYoung L7-dinish
-##L4-peter L5-peter L6-gilfoyle L7-jimYoung L9-dinish
-##L6-peter L7-peter L8-gilfoyle L9-jimYoung
-##L8-peter L9-peter
-
-##richard → gilfoyle → peter
-
-##richard → dinish → jimYoung → peter
-
-##richard → gilfoyle → erlich → jimYoung → pete

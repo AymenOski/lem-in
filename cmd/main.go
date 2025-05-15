@@ -24,6 +24,6 @@ func main() {
 
 	ants := utils.CreateAnts(g.Col.AntNum, g.Rooms[g.Col.StartingRoom]) // create ants
 	compute.Solver(g, ants)
-
+	
 	g.Simulation(ants, g.Col.StartingRoom, g.Col.EndingRoom)
 }

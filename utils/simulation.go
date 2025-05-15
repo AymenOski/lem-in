@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"os"
 )
 
 // Simulation assigns ants to paths in a balanced way and simulates their step-by-step movement.
@@ -35,14 +34,14 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 		pathLens[bestIdx]++
 	}
 	// create the out for the standard output
-	out, err := os.ReadFile(os.Args[1])
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	output := string(out)
-	output += "\n"
-	fmt.Println(output)
+	// out, err := os.ReadFile(os.Args[1])
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// output := string(out)
+	// output += "\n"
+	// fmt.Println(output)
 
 	c := 0
 
@@ -102,5 +101,5 @@ func (g *Graph) Simulation(ants []*Ant, Start string, End string) {
 
 	}
 	// for debbuging puposes
-	// fmt.Println("Steps : ", c)
+	fmt.Println("Steps : ", c)
 }
