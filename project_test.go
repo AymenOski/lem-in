@@ -12,6 +12,7 @@ import (
 type testCase struct {
 	Name      string
 	Turns     int // Expected number of turns (lines with moves)
+	err       string
 	TimeLimit time.Duration
 	Path      string // Relative path to the test file
 }
@@ -27,6 +28,8 @@ func TestValidMaps(t *testing.T) {
 		{Name: "example05.txt", Turns: 8, Path: "maps/audit/example05.txt"},
 		{Name: "example06.txt", TimeLimit: 90 * time.Second, Path: "maps/audit/example06.txt"},
 		{Name: "example07.txt", TimeLimit: 150 * time.Second, Path: "maps/audit/example07.txt"},
+		{Name: "badexample00.txt", err: "ERROR: invalid data format, invalid number of ants", Path: "maps/audit/example03.txt"},
+		{Name: "badexample01.txt", err: "ERROR: invalid data format, invalid link", Path: "maps/audit/example03.txt"},
 
 		// Bhandari maps
 		{Name: "bow.txt", Turns: 6, Path: "maps/bhandari/bow.txt"},
