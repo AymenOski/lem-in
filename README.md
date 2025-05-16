@@ -41,9 +41,12 @@ Your program must:
 
 * I implemented a customized BFS algorithm (Editable BFS) to find all viable paths from `##start` to `##end`.
 
-* Instead of classic DFS or backtracking, I simulate ants' movement based on available paths and assign each ant to a path considering its length, simulating their movements turn by turn and optimizing usage of available space.
 
-### Ant Distribution (Simulation)
+## Ant Distribution (Simulation)
+
+### Path Assignment Phase
+Before starting the simulation, each ant is assigned to one of the available disjoint paths.  
+We use a **balanced load distribution** approach rather than a greedy one
 
 * Each ant is assigned a path from the list of viable paths.
 * I prioritize shorter paths but balance the load by assigning ants smartly to avoid collisions.
@@ -81,17 +84,73 @@ r3-end
 * Tunnels used once per turn
 * Rooms' names can’t contain spaces, or start with L/#
 * Duplicate rooms or invalid coordinates are not allowed
-
+* etc...
 ## 🧰 Tech Stack
 
 * Go (no external packages)
 * Standard libraries only (fmt, os, bufio, etc.)
+
+## 🗂️ Project Structure
+
+```text
+├── README.md
+├── cmd
+│   └── main.go
+├── compute
+│   └── solver.go
+├── const
+│   └── const.go
+├── go.mod
+├── image.png
+├── input.txt
+├── maps
+│   ├── README.md
+│   ├── audit
+│   │   ├── badexample00.txt
+│   │   ├── badexample01.txt
+│   │   ├── example00.txt
+│   │   ├── example01.txt
+│   │   ├── example02.txt
+│   │   ├── example03.txt
+│   │   ├── example04.txt
+│   │   ├── example05.txt
+│   │   ├── example06.txt
+│   │   └── example07.txt
+│   ├── bhandari
+│   │   ├── bow.txt
+│   │   ├── square-despair.txt
+│   │   └── zhangir.txt
+│   ├── custom
+│   │   ├── extra-tails.txt
+│   │   └── nrblzn.txt
+│   └── default
+│       ├── big_1.txt
+│       ├── big_2.txt
+│       ├── big_5.txt
+│       ├── big_6.txt
+│       ├── big_7.txt
+│       ├── line-endurance.txt
+│       └── loop.txt
+├── parse
+│   ├── checkers.go
+│   └── parser.go
+├── project_test.go
+└── utils
+    ├── bfs.go
+    ├── dsa.go
+    ├── filter.go
+    ├── helpers.go
+    ├── methods.go
+    └── simulation.go
+
 
 ## 📁 Usage
 
 ```bash
 go run ./cmd/ maps/directory_name/file.txt
 ```
+
+
 
 ## 🔚 Conclusion
 
